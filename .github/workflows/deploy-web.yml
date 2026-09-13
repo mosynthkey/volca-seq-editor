@@ -45,26 +45,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # GITHUB_TOKEN cannot create a Pages site; enablement must be done once in Settings.
-      - name: Check GitHub Pages
-        id: pages
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh api "repos/${{ github.repository }}/pages" --jq .status
-
-      - name: Deploy
-        if: steps.pages.outcome == 'success'
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Pages setup required
-        if: steps.pages.outcome != 'success'
-        run: |
-          {
-            echo '## GitHub Pages is not enabled'
-            echo ''
-            echo 'Open [Settings → Pages](https://github.com/'"${{ github.repository }}"'/settings/pages),'
-            echo 'set **Build and deployment → Source** to **GitHub Actions**, then re-run this workflow.'
-          } >> "$GITHUB_STEP_SUMMARY"
-          echo '::warning::GitHub Pages is not enabled. Set Source to GitHub Actions in repo Settings → Pages, then re-run.'
