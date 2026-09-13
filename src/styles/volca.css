@@ -265,10 +265,6 @@ input, textarea, [contenteditable="true"] {
   opacity: 0.35;
 }
 
-.header-cell.skipped {
-  color: var(--volca-led);
-}
-
 .flag-cell {
   display: grid;
   place-items: center;
