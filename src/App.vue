@@ -31,7 +31,8 @@
           style="max-width: 260px"
         />
 
-        <v-btn size="small" variant="tonal" color="primary" @click="midi.initialize()">
+        <v-btn size="small" variant="tonal" color="primary" :title="t('midi.connect')" @click="midi.initialize()">
+          <Cable :size="16" class="btn-icon" />
           {{ t('midi.connect') }}
         </v-btn>
 
@@ -41,11 +42,13 @@
           <template #activator="{ props: menuProps }">
             <v-btn
               v-bind="menuProps"
-              icon="mdi-earth"
               variant="text"
               size="small"
               :aria-label="t('common.language')"
-            />
+              :title="t('common.language')"
+            >
+              <Globe :size="18" />
+            </v-btn>
           </template>
           <v-list density="compact" min-width="140">
             <v-list-item
@@ -79,6 +82,7 @@
 import { computed, onMounted, watch } from 'vue'
 import { useTheme } from 'vuetify'
 import { useI18n } from 'vue-i18n'
+import { Cable, Globe } from '@lucide/vue'
 import { setAppLocale } from '@/i18n'
 import { useMidiStore } from '@/stores/midiStore'
 import { useSequencerStore } from '@/stores/sequencerStore'
@@ -126,3 +130,10 @@ onMounted(() => {
   midi.initialize()
 })
 </script>
+
+<style scoped>
+.btn-icon {
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+</style>

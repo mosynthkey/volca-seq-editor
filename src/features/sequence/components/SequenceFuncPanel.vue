@@ -11,23 +11,23 @@
 
       <div>
         <h4 class="volca-section-title">Flags</h4>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-          <v-checkbox v-model="sequence.func.motionOn" :label="t('sequence.motionOn')" density="compact" hide-details />
-          <v-checkbox v-model="sequence.func.motionSmooth" :label="t('sequence.motionSmooth')" density="compact" hide-details />
-          <v-checkbox
-            v-if="sequence.device === 'keys'"
-            v-model="sequence.func.flux"
-            :label="t('sequence.flux')"
-            density="compact"
-            hide-details
-          />
-          <v-checkbox
-            v-if="sequence.device === 'bass'"
-            v-model="sequence.func.slideEnabled"
-            :label="t('sequence.slide')"
-            density="compact"
-            hide-details
-          />
+        <div class="flag-toggles">
+          <div class="flag-toggle">
+            <span>{{ t('sequence.motionOn') }}</span>
+            <AppToggle v-model="sequence.func.motionOn" :aria-label="t('sequence.motionOn')" />
+          </div>
+          <div class="flag-toggle">
+            <span>{{ t('sequence.motionSmooth') }}</span>
+            <AppToggle v-model="sequence.func.motionSmooth" :aria-label="t('sequence.motionSmooth')" />
+          </div>
+          <div v-if="sequence.device === 'keys'" class="flag-toggle">
+            <span>{{ t('sequence.flux') }}</span>
+            <AppToggle v-model="sequence.func.flux" :aria-label="t('sequence.flux')" />
+          </div>
+          <div v-if="sequence.device === 'bass'" class="flag-toggle">
+            <span>{{ t('sequence.slide') }}</span>
+            <AppToggle v-model="sequence.func.slideEnabled" :aria-label="t('sequence.slide')" />
+          </div>
         </div>
       </div>
 
@@ -67,8 +67,26 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import AppToggle from '@/components/AppToggle.vue'
 import { useSequencerStore } from '@/stores/sequencerStore'
 
 const { t } = useI18n()
 const sequence = useSequencerStore()
 </script>
+
+<style scoped>
+.flag-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+.flag-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--volca-muted);
+  font-size: 11px;
+}
+</style>

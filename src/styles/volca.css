@@ -417,6 +417,52 @@ input, textarea, [contenteditable="true"] {
   white-space: pre-wrap;
 }
 
+.motion-gutter {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 6px 8px;
+}
+
+.motion-gutter__label {
+  color: var(--volca-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.motion-target-select {
+  min-width: 0;
+}
+
+.motion-gutter__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.motion-gutter__clear {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--volca-accent);
+  cursor: pointer;
+}
+
+.motion-gutter__clear:hover {
+  background: var(--volca-accent-soft);
+}
+
+.motion-gutter__clear:focus-visible {
+  outline: 2px solid var(--volca-accent);
+  outline-offset: 2px;
+}
+
 /* Smooth Vuetify surface tint when theme swaps */
 .v-application {
   background: transparent !important;

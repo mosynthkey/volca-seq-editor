@@ -82,8 +82,8 @@
     </div>
 
     <div class="roll-row motion-row">
-      <div class="pitch-gutter" style="flex-direction:column;align-items:stretch;gap:4px;padding:6px 8px">
-        <span>{{ t('sequence.motion') }}</span>
+      <div class="pitch-gutter motion-gutter">
+        <span class="motion-gutter__label">{{ t('sequence.motion') }}</span>
         <v-select
           v-model="sequence.motionIndex"
           :items="motionItems"
@@ -92,17 +92,22 @@
           density="compact"
           hide-details
           variant="underlined"
+          class="motion-target-select"
         />
-        <div style="display:flex;gap:6px;align-items:center">
-          <v-checkbox
+        <div class="motion-gutter__actions">
+          <AppToggle
             v-model="sequence.motionEnabled[sequence.motionIndex]"
-            density="compact"
-            hide-details
-            :label="t('sequence.motionEnable')"
+            :aria-label="t('sequence.motionEnable')"
           />
-          <v-btn size="x-small" variant="text" @click="sequence.clearMotionParam(sequence.motionIndex)">
-            {{ t('sequence.motionClear') }}
-          </v-btn>
+          <button
+            type="button"
+            class="motion-gutter__clear"
+            :title="t('sequence.motionClear')"
+            :aria-label="t('sequence.motionClear')"
+            @click="sequence.clearMotionParam(sequence.motionIndex)"
+          >
+            <Trash2 :size="16" />
+          </button>
         </div>
       </div>
       <div
@@ -152,6 +157,8 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Trash2 } from '@lucide/vue'
+import AppToggle from '@/components/AppToggle.vue'
 import { useSequencerStore } from '@/stores/sequencerStore'
 import type { SequenceNote } from '@/types/sequence'
 

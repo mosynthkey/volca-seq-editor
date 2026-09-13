@@ -1,8 +1,11 @@
 <template>
   <div class="panel side-card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
-      <h3 style="margin:0">{{ t('sequence.library') }}</h3>
-      <v-btn size="x-small" variant="tonal" @click="saveCurrent">{{ t('sequence.saveLibrary') }}</v-btn>
+    <div class="library-header">
+      <h3>{{ t('sequence.library') }}</h3>
+      <v-btn size="x-small" variant="tonal" :title="t('sequence.saveLibrary')" @click="saveCurrent">
+        <Save :size="14" class="btn-icon" />
+        {{ t('sequence.saveLibrary') }}
+      </v-btn>
     </div>
     <p v-if="!library.items.length" class="hint-banner" style="border:0;padding:0">
       {{ t('library.empty') }}
@@ -13,8 +16,12 @@
         <div class="muted">{{ item.state.device }} · {{ formatDate(item.savedAt) }}</div>
       </div>
       <div class="library-actions">
-        <v-btn size="x-small" variant="text" @click="loadItem(item.id)">{{ t('library.load') }}</v-btn>
-        <v-btn size="x-small" variant="text" color="error" @click="library.remove(item.id)">
+        <v-btn size="x-small" variant="text" :title="t('library.load')" @click="loadItem(item.id)">
+          <FolderOpen :size="14" class="btn-icon" />
+          {{ t('library.load') }}
+        </v-btn>
+        <v-btn size="x-small" variant="text" color="error" :title="t('library.delete')" @click="library.remove(item.id)">
+          <Trash2 :size="14" class="btn-icon" />
           {{ t('library.delete') }}
         </v-btn>
       </div>
@@ -24,6 +31,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { FolderOpen, Save, Trash2 } from '@lucide/vue'
 import { useLibraryStore } from '@/stores/libraryStore'
 import { useSequencerStore } from '@/stores/sequencerStore'
 
@@ -45,6 +53,16 @@ const formatDate = (value: number) =>
 </script>
 
 <style scoped>
+.library-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.library-header h3 {
+  margin: 0;
+}
 .library-item {
   display: flex;
   align-items: center;
@@ -60,5 +78,9 @@ const formatDate = (value: number) =>
 .library-actions {
   display: flex;
   gap: 2px;
+}
+.btn-icon {
+  margin-right: 4px;
+  flex-shrink: 0;
 }
 </style>

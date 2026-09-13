@@ -23,6 +23,7 @@
     "verify": "run-s verify:euclidean verify:motion verify:transfer verify:device"
   },
   "dependencies": {
+    "@lucide/vue": "^1.45.0",
     "@mdi/font": "^7.4.47",
     "@types/webmidi": "^2.1.0",
     "pinia": "^3.0.1",

@@ -14,6 +14,9 @@ const messages = {
       undo: '元に戻す',
       redo: 'やり直す',
       language: '言語',
+      on: 'ON',
+      off: 'OFF',
+      toggle: '切替',
     },
     device: {
       label: '機種',
@@ -136,6 +139,9 @@ const messages = {
       undo: 'Undo',
       redo: 'Redo',
       language: 'Language',
+      on: 'ON',
+      off: 'OFF',
+      toggle: 'Toggle',
     },
     device: {
       label: 'Device',
