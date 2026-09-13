@@ -49,7 +49,7 @@
     <div class="toolbar-group" style="margin-left:auto">
       <v-btn
         color="primary"
-        :disabled="!midi.hasOutput || midi.transferring"
+        :disabled="midi.transferring"
         @click="openTransfer"
       >
         {{ t('sequence.transfer') }}
