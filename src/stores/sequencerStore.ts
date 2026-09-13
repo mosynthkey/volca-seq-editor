@@ -28,10 +28,17 @@ import {
   type NoteKey,
 } from '@/utils/sequenceNoteEditing';
 import { clearSequenceStep, copyNotesEuclid, copySequenceStep, shiftSteps } from '@/utils/sequenceStepEditing';
+import {
+  createRandomStepOrder,
+  createReversedStepOrder,
+  reorderSequenceSteps,
+  type SequenceReorderScope,
+} from '@/utils/sequenceRandomizer';
 import { extractStepNotes, parseSmf } from '@/utils/smfImport';
 import { useMidiStore } from '@/stores/midiStore';
 
 const HISTORY_LIMIT = 80;
+const SKIP_RANDOMIZE_PREF = 'volca-seq-skip-randomize';
 const cloneState = (state: SequenceState) => JSON.parse(JSON.stringify(state)) as SequenceState;
 
 export const useSequencerStore = defineStore('sequencer', () => {
@@ -52,6 +59,11 @@ export const useSequencerStore = defineStore('sequencer', () => {
   const transferStatus = ref<'idle' | 'countdown' | 'sending' | 'done' | 'error'>('idle');
   const transferError = ref<string | null>(null);
   const transferSummary = ref('');
+  const showRandomizeDialog = ref(false);
+  const skipRandomizeDialog = ref(
+    typeof localStorage !== 'undefined'
+      && localStorage.getItem(SKIP_RANDOMIZE_PREF) === '1',
+  );
 
   const history = ref<SequenceState[]>([]);
   const historyIndex = ref(-1);
@@ -175,6 +187,20 @@ export const useSequencerStore = defineStore('sequencer', () => {
     return true;
   };
 
+  const removeNote = (target: Pick<SequenceNote, 'pitch' | 'startStep'>) => {
+    const before = notes.value.length;
+    notes.value = notes.value.filter(note => !sameNoteKey(
+      { pitch: note.pitch, startStep: note.startStep },
+      { pitch: target.pitch, startStep: target.startStep },
+    ));
+    if (notes.value.length === before) return;
+    selectedNoteKeys.value = selectedNoteKeys.value.filter(key => !sameNoteKey(key, {
+      pitch: target.pitch,
+      startStep: target.startStep,
+    }));
+    scheduleHistory();
+  };
+
   const removeSelectedNotes = () => {
     if (!selectedNoteKeys.value.length) return;
     const keySet = new Set(selectedNoteKeys.value.map(key => noteKeyOf(key)));
@@ -196,6 +222,23 @@ export const useSequencerStore = defineStore('sequencer', () => {
 
   const resizeSelectedNotes = (lengthDelta: number) => {
     const next = resizeNotes(notes.value, selectedNoteKeys.value, lengthDelta, profile.value.maxVoices);
+    if (!next) return;
+    notes.value = next;
+    scheduleHistory();
+  };
+
+  const resizeNote = (key: NoteKey, newLength: number) => {
+    const target = notes.value.find(note => sameNoteKey(
+      { pitch: note.pitch, startStep: note.startStep },
+      key,
+    ));
+    if (!target) return;
+    const lengthDelta = Math.round(newLength) - target.length;
+    if (!lengthDelta) return;
+    const keys = selectedNoteKeys.value.some(item => sameNoteKey(item, key))
+      ? selectedNoteKeys.value
+      : [key];
+    const next = resizeNotes(notes.value, keys, lengthDelta, profile.value.maxVoices);
     if (!next) return;
     notes.value = next;
     scheduleHistory();
@@ -257,6 +300,33 @@ export const useSequencerStore = defineStore('sequencer', () => {
 
   const applyShiftSteps = (delta: number) => {
     loadFromState(shiftSteps(toState(), delta));
+  };
+
+  const randomizeSteps = (random: () => number = Math.random, scope: SequenceReorderScope = 'all') => {
+    loadFromState(reorderSequenceSteps(toState(), createRandomStepOrder(random), scope));
+  };
+
+  const reverseSteps = () => {
+    loadFromState(reorderSequenceSteps(toState(), createReversedStepOrder()));
+  };
+
+  const requestRandomize = () => {
+    if (skipRandomizeDialog.value) {
+      randomizeSteps();
+      return;
+    }
+    showRandomizeDialog.value = true;
+  };
+
+  const confirmRandomize = (dontShowAgain = false) => {
+    if (dontShowAgain) {
+      skipRandomizeDialog.value = true;
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(SKIP_RANDOMIZE_PREF, '1');
+      }
+    }
+    showRandomizeDialog.value = false;
+    randomizeSteps();
   };
 
   const importSmf = async (file: File, barOffset = 0) => {
@@ -364,6 +434,8 @@ export const useSequencerStore = defineStore('sequencer', () => {
     transferStatus,
     transferError,
     transferSummary,
+    showRandomizeDialog,
+    skipRandomizeDialog,
     profile,
     toState,
     loadFromState,
@@ -376,9 +448,11 @@ export const useSequencerStore = defineStore('sequencer', () => {
     isNoteSelected,
     selectNote,
     addNote,
+    removeNote,
     removeSelectedNotes,
     moveSelectedNotes,
     resizeSelectedNotes,
+    resizeNote,
     setTickOffset,
     moveNoteToTick,
     toggleStepOn,
@@ -387,6 +461,10 @@ export const useSequencerStore = defineStore('sequencer', () => {
     applyCopyStep,
     applyEuclidNote,
     applyShiftSteps,
+    randomizeSteps,
+    reverseSteps,
+    requestRandomize,
+    confirmRandomize,
     importSmf,
     exportJson,
     importJson,

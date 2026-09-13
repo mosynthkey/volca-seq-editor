@@ -47,6 +47,42 @@
         <ChevronRight :size="16" class="btn-icon" />
         {{ t('sequence.shiftRight') }}
       </v-btn>
+      <div class="randomize-split">
+        <v-btn
+          size="small"
+          variant="tonal"
+          class="randomize-main"
+          :title="t('sequence.randomize')"
+          @click="sequence.requestRandomize()"
+        >
+          <Dices :size="16" class="btn-icon" />
+          {{ t('sequence.randomize') }}
+        </v-btn>
+        <v-menu location="bottom end" offset="6">
+          <template #activator="{ props: menuProps }">
+            <v-btn
+              v-bind="menuProps"
+              size="small"
+              variant="tonal"
+              class="randomize-menu-btn"
+              :title="t('sequence.randomizeMore')"
+              :aria-label="t('sequence.randomizeMore')"
+            >
+              <ChevronDown :size="14" />
+            </v-btn>
+          </template>
+          <v-list density="compact">
+            <v-list-item
+              :title="t('sequence.randomizeNotes')"
+              @click="sequence.randomizeSteps(Math.random, 'notes')"
+            />
+            <v-list-item
+              :title="t('sequence.reverseSequence')"
+              @click="sequence.reverseSteps()"
+            />
+          </v-list>
+        </v-menu>
+      </div>
       <v-btn size="small" variant="tonal" color="error" :title="t('sequence.clearAll')" @click="sequence.clearAll()">
         <Trash2 :size="16" class="btn-icon" />
         {{ t('sequence.clearAll') }}
@@ -88,8 +124,10 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Dices,
   Download,
   FileInput,
   FileUp,
@@ -133,5 +171,23 @@ const onJson = async (event: Event) => {
 .btn-icon {
   margin-right: 6px;
   flex-shrink: 0;
+}
+
+.randomize-split {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.randomize-split :deep(.randomize-main) {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.randomize-split :deep(.randomize-menu-btn) {
+  min-width: 28px !important;
+  padding: 0 4px !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-left: 0 !important;
 }
 </style>
