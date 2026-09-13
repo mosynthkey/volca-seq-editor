@@ -293,9 +293,32 @@ input, textarea, [contenteditable="true"] {
 }
 
 .roll-body {
+  position: relative;
   max-height: 420px;
   overflow: auto;
   background: var(--volca-sunken);
+  touch-action: none;
+  user-select: none;
+}
+
+.roll-body.is-moving .note-cell {
+  cursor: grabbing;
+}
+
+.roll-body.is-resizing .note-cell {
+  cursor: ew-resize;
+}
+
+.roll-body.is-marquee .note-resize-handle {
+  cursor: crosshair;
+}
+
+.note-marquee {
+  position: absolute;
+  z-index: 5;
+  border: 1px solid var(--volca-accent);
+  background: color-mix(in srgb, var(--volca-accent) 18%, transparent);
+  pointer-events: none;
 }
 
 .note-cell {
@@ -304,6 +327,10 @@ input, textarea, [contenteditable="true"] {
 
 .note-cell.has-note {
   background: linear-gradient(180deg, var(--volca-note), var(--volca-note-soft));
+}
+
+.note-cell.preview {
+  opacity: 0.85;
 }
 
 .note-cell.selected {
@@ -332,7 +359,7 @@ input, textarea, [contenteditable="true"] {
   position: absolute;
   top: 0;
   right: 0;
-  width: 6px;
+  width: 10px;
   height: 100%;
   cursor: ew-resize;
   background: rgba(255, 255, 255, 0.25);

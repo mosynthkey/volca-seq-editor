@@ -51,6 +51,8 @@ Web MIDI 対応ブラウザ（Chrome / Edge 推奨）で MIDI インターフェ
 
 `main` への push で `.github/workflows/deploy-web.yml` がビルドし、GitHub Pages にデプロイします。
 
+リポジトリ Settings → Pages → Source を **GitHub Actions** にしてください。公開 URL は次の想定です。
+
 `https://mosynthkey.github.io/volca-seq-editor/`
 
 ## ライセンス
