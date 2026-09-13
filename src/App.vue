@@ -37,10 +37,26 @@
 
         <v-spacer />
 
-        <v-btn-toggle v-model="locale" mandatory density="compact" color="primary">
-          <v-btn value="ja" size="small">JA</v-btn>
-          <v-btn value="en" size="small">EN</v-btn>
-        </v-btn-toggle>
+        <v-menu location="bottom end">
+          <template #activator="{ props: menuProps }">
+            <v-btn
+              v-bind="menuProps"
+              icon="mdi-earth"
+              variant="text"
+              size="small"
+              :aria-label="t('common.language')"
+            />
+          </template>
+          <v-list density="compact" min-width="140">
+            <v-list-item
+              v-for="option in localeItems"
+              :key="option.value"
+              :title="option.title"
+              :active="locale === option.value"
+              @click="locale = option.value"
+            />
+          </v-list>
+        </v-menu>
       </header>
 
       <main class="app-main">
@@ -48,20 +64,6 @@
           <SequencerTab />
         </section>
         <aside class="side-panel">
-          <div class="panel side-card">
-            <h3>MIDI / Device</h3>
-            <p class="hint-banner" style="border: 0; padding: 0 0 8px">
-              {{ t('sequence.sysexNone') }}
-            </p>
-            <p class="hint-banner" style="border: 0; padding: 0 0 8px">
-              {{ t('sequence.midiOutNone') }}
-            </p>
-            <ul class="note-list">
-              <li v-for="noteKey in sequence.profile.notes" :key="noteKey">
-                {{ t(`notes.${noteKey}`) }}
-              </li>
-            </ul>
-          </div>
           <LibraryPanel />
           <div class="panel side-card">
             <h3>Log</h3>
@@ -92,6 +94,11 @@ const sequence = useSequencerStore()
 const deviceItems = [
   { title: 'volca keys', value: 'keys' },
   { title: 'volca bass', value: 'bass' },
+]
+
+const localeItems = [
+  { title: '日本語', value: 'ja' as const },
+  { title: 'English', value: 'en' as const },
 ]
 
 const deviceModel = computed({

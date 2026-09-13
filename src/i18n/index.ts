@@ -13,6 +13,7 @@ const messages = {
       clear: 'クリア',
       undo: '元に戻す',
       redo: 'やり直す',
+      language: '言語',
     },
     device: {
       label: '機種',
@@ -134,6 +135,7 @@ const messages = {
       clear: 'Clear',
       undo: 'Undo',
       redo: 'Redo',
+      language: 'Language',
     },
     device: {
       label: 'Device',
