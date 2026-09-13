@@ -32,6 +32,12 @@ jobs:
 
       - run: npm run build
 
+      # Enable Pages (source: GitHub Actions) on first deploy so deploy-pages does not 404.
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
