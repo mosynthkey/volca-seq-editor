@@ -1,0 +1,350 @@
+:root {
+  color-scheme: dark;
+  --volca-bg: #1a2228;
+  --volca-panel: rgba(36, 48, 56, 0.88);
+  --volca-panel-solid: #243038;
+  --volca-raised: #2e3d48;
+  --volca-sunken: #12181d;
+  --volca-line: rgba(196, 165, 116, 0.16);
+  --volca-line-strong: rgba(196, 165, 116, 0.34);
+  --volca-accent: #c4a574;
+  --volca-accent-bright: #dfc49a;
+  --volca-accent-soft: rgba(196, 165, 116, 0.14);
+  --volca-text: #eef3f6;
+  --volca-muted: #9aadb8;
+  --volca-teal: #3ecfbe;
+  --volca-pink: #e86b8a;
+  --volca-type-label: 13px;
+  --volca-type-body: 14px;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: var(--volca-type-body);
+}
+
+html, body, #app {
+  margin: 0;
+  min-width: 720px;
+  min-height: 100%;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(62, 207, 190, 0.12), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(196, 165, 116, 0.14), transparent 50%),
+    var(--volca-bg);
+  color: var(--volca-text);
+  user-select: none;
+}
+
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--volca-line);
+  background: rgba(18, 24, 29, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.app-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+}
+
+.app-brand__title {
+  margin: 0;
+  color: var(--volca-accent-bright);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.app-brand__sub {
+  margin: 0;
+  color: var(--volca-muted);
+  font-size: 12px;
+}
+
+.app-main {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 12px;
+  padding: 12px;
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  border: 1px solid var(--volca-line);
+  border-radius: 12px;
+  background: var(--volca-panel);
+  overflow: hidden;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--volca-line);
+  background: rgba(18, 24, 29, 0.45);
+}
+
+.toolbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar-group + .toolbar-group {
+  margin-left: 4px;
+  padding-left: 10px;
+  border-left: 1px solid var(--volca-line-strong);
+}
+
+.hint-banner {
+  margin: 0;
+  padding: 8px 12px;
+  color: var(--volca-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  border-bottom: 1px solid var(--volca-line);
+  background: rgba(62, 207, 190, 0.06);
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.side-card {
+  padding: 12px;
+}
+
+.side-card h3 {
+  margin: 0 0 8px;
+  color: var(--volca-accent);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.note-list {
+  margin: 0;
+  padding-left: 16px;
+  color: var(--volca-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.roll {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+
+.roll-header,
+.roll-row {
+  display: grid;
+  grid-template-columns: 160px repeat(16, minmax(28px, 1fr));
+}
+
+.pitch-gutter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  color: var(--volca-muted);
+  font-size: 11px;
+  border-right: 1px solid var(--volca-line);
+  background: rgba(18, 24, 29, 0.5);
+}
+
+.pitch-gutter.black-key {
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--volca-accent-bright);
+}
+
+.step-cell {
+  position: relative;
+  min-height: 22px;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.step-cell.beat {
+  background: rgba(196, 165, 116, 0.05);
+}
+
+.header-cell {
+  display: grid;
+  place-items: center;
+  color: var(--volca-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.header-cell.muted {
+  opacity: 0.35;
+}
+
+.header-cell.skipped {
+  color: var(--volca-pink);
+}
+
+.flag-cell {
+  display: grid;
+  place-items: center;
+  min-height: 26px;
+}
+
+.flag {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--volca-line-strong);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.flag.on {
+  background: var(--volca-teal);
+  border-color: var(--volca-teal);
+}
+
+.flag.sound.on {
+  background: var(--volca-accent);
+  border-color: var(--volca-accent);
+}
+
+.roll-body {
+  max-height: 420px;
+  overflow: auto;
+  background: var(--volca-sunken);
+}
+
+.note-cell {
+  cursor: cell;
+}
+
+.note-cell.has-note {
+  background: linear-gradient(180deg, rgba(62, 207, 190, 0.85), rgba(62, 207, 190, 0.45));
+}
+
+.note-cell.selected {
+  outline: 2px solid var(--volca-accent-bright);
+  outline-offset: -2px;
+}
+
+.note-cell.start {
+  border-left: 2px solid #fff;
+}
+
+.note-cell__label {
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  font-size: 9px;
+  color: #0b2422;
+  font-weight: 700;
+}
+
+.note-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.motion-bars {
+  display: contents;
+}
+
+.motion-col {
+  display: flex;
+  align-items: flex-end;
+  min-height: 64px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.motion-col.off {
+  opacity: 0.35;
+}
+
+.motion-fill {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(196, 165, 116, 0.95), rgba(196, 165, 116, 0.35));
+}
+
+.motion-fill.point {
+  position: absolute;
+  bottom: 0;
+}
+
+.motion-value {
+  position: absolute;
+  inset: auto 0 2px;
+  text-align: center;
+  font-size: 9px;
+  color: var(--volca-text);
+  pointer-events: none;
+}
+
+.flux-lane {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--volca-line);
+}
+
+.flux-ticks {
+  display: grid;
+  grid-template-columns: repeat(96, minmax(2px, 1fr));
+  gap: 1px;
+  min-height: 28px;
+  align-items: end;
+}
+
+.flux-tick {
+  height: 10px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.flux-tick.on {
+  height: 22px;
+  background: var(--volca-teal);
+}
+
+.flux-tick.step-start {
+  background: rgba(196, 165, 116, 0.35);
+}
+
+.log-panel {
+  max-height: 160px;
+  overflow: auto;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--volca-muted);
+  white-space: pre-wrap;
+}

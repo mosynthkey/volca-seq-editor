@@ -1,0 +1,46 @@
+{
+  "name": "volca-seq-editor",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Sequence editor for KORG volca keys / volca bass (real-time MIDI transfer)",
+  "author": "Masaki Ono",
+  "packageManager": "npm@10.9.7",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mosynthkey/volca-seq-editor.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build --force",
+    "verify:euclidean": "tsx scripts/verify-euclidean.ts",
+    "verify:motion": "tsx scripts/verify-motion-pattern.ts",
+    "verify:transfer": "tsx scripts/verify-realtime-transfer.ts",
+    "verify:device": "tsx scripts/verify-device-profile.ts",
+    "verify": "run-s verify:euclidean verify:motion verify:transfer verify:device"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "@types/webmidi": "^2.1.0",
+    "pinia": "^3.0.1",
+    "vue": "^3.5.13",
+    "vue-i18n": "^11.1.2",
+    "vuetify": "^4.2.1"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.9.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/tsconfig": "^0.7.0",
+    "npm-run-all2": "^7.0.1",
+    "sass": "1.77.8",
+    "tsx": "^4.19.2",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.3",
+    "vite-plugin-vuetify": "^2.1.0",
+    "vue-tsc": "^2.1.10"
+  }
+}
