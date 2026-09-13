@@ -9,47 +9,14 @@
         </div>
       </div>
 
-      <div>
-        <h4 class="volca-section-title">Flags</h4>
+      <div v-if="sequence.device === 'keys'">
+        <h4 class="volca-section-title">{{ t('sequence.flux') }}</h4>
         <div class="flag-toggles">
           <div class="flag-toggle">
-            <span>{{ t('sequence.motionOn') }}</span>
-            <AppToggle v-model="sequence.func.motionOn" :aria-label="t('sequence.motionOn')" />
-          </div>
-          <div class="flag-toggle">
-            <span>{{ t('sequence.motionSmooth') }}</span>
-            <AppToggle v-model="sequence.func.motionSmooth" :aria-label="t('sequence.motionSmooth')" />
-          </div>
-          <div v-if="sequence.device === 'keys'" class="flag-toggle">
             <span>{{ t('sequence.flux') }}</span>
             <AppToggle v-model="sequence.func.flux" :aria-label="t('sequence.flux')" />
           </div>
-          <div v-if="sequence.device === 'bass'" class="flag-toggle">
-            <span>{{ t('sequence.slide') }}</span>
-            <AppToggle v-model="sequence.func.slideEnabled" :aria-label="t('sequence.slide')" />
-          </div>
         </div>
-      </div>
-
-      <div>
-        <h4 class="volca-section-title">{{ t('sequence.tempo') }}</h4>
-        <v-btn-toggle v-model="sequence.func.tempo" mandatory density="compact" color="primary" class="mt-1">
-          <v-btn :value="0" size="small">1/1</v-btn>
-          <v-btn :value="1" size="small">1/2</v-btn>
-          <v-btn :value="2" size="small">1/4</v-btn>
-        </v-btn-toggle>
-      </div>
-
-      <div v-if="sequence.device === 'bass'">
-        <h4 class="volca-section-title">{{ t('sequence.oscillator') }}</h4>
-        <v-btn-toggle v-model="sequence.oscillatorLane" mandatory density="compact" color="secondary" class="mt-1">
-          <v-btn :value="0" size="small">VCO1</v-btn>
-          <v-btn :value="1" size="small">VCO2</v-btn>
-          <v-btn :value="2" size="small">VCO3</v-btn>
-        </v-btn-toggle>
-        <p style="margin:6px 0 0;color:var(--volca-muted);font-size:11px;max-width:280px">
-          {{ t('sequence.oscillatorHint') }}
-        </p>
       </div>
 
       <div v-if="sequence.device === 'keys' && sequence.func.flux">

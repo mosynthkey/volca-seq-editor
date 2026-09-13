@@ -40,9 +40,7 @@ const selectedNote = computed(() => {
   const key = sequence.selectedNoteKeys[0]
   if (!key) return null
   return sequence.notes.find(note =>
-    note.pitch === key.pitch
-    && note.startStep === key.startStep
-    && note.oscillatorLane === (key.oscillatorLane ?? 0)) ?? null
+    note.pitch === key.pitch && note.startStep === key.startStep) ?? null
 })
 
 const nudgeSelected = (tick: number) => {

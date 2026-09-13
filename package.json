@@ -17,10 +17,9 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "verify:euclidean": "tsx scripts/verify-euclidean.ts",
-    "verify:motion": "tsx scripts/verify-motion-pattern.ts",
     "verify:transfer": "tsx scripts/verify-realtime-transfer.ts",
     "verify:device": "tsx scripts/verify-device-profile.ts",
-    "verify": "run-s verify:euclidean verify:motion verify:transfer verify:device"
+    "verify": "run-s verify:euclidean verify:transfer verify:device"
   },
   "dependencies": {
     "@lucide/vue": "^1.45.0",

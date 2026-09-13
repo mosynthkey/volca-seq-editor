@@ -1,23 +1,20 @@
 import type { DeviceModel } from '../types/sequence';
 
-export interface MotionParamDef {
+export interface ControlChangeDef {
   key: string;
   cc: number;
-  /** Parameters that cannot be motion-recorded on hardware (still sendable as live CC). */
-  motionRecordable: boolean;
+  notes?: string;
 }
 
 export interface DeviceProfile {
   id: DeviceModel;
   labelKey: string;
-  /** Max simultaneous voices the device can usefully accept during real-time rec. */
+  /** Max simultaneous voices useful during real-time rec. */
   maxVoices: number;
-  /** Keys-only Flux fine timing. */
+  /** Keys-only Flux fine timing (device Flux must be ON). */
   supportsFlux: boolean;
-  /** Bass hardware has 3 oscillator parts; MIDI notes cannot target them independently. */
-  oscillatorLanes: number;
-  oscillatorMidiIndependent: boolean;
-  motionParams: MotionParamDef[];
+  /** Reference CC map from the official MIDI Implementation Chart (not written into the sequencer via MIDI). */
+  controlChanges: ControlChangeDef[];
   sysexSupported: boolean;
   midiOutSupported: boolean;
   patternSlots: number;
@@ -25,39 +22,39 @@ export interface DeviceProfile {
 }
 
 /** Official MIDI Implementation Chart (2013.06.10) — System Exclusive: none. */
-export const KEYS_MOTION_PARAMS: MotionParamDef[] = [
-  { key: 'portamento', cc: 5, motionRecordable: true },
-  { key: 'expression', cc: 11, motionRecordable: false },
-  { key: 'voice', cc: 40, motionRecordable: false },
-  { key: 'octave', cc: 41, motionRecordable: false },
-  { key: 'detune', cc: 42, motionRecordable: true },
-  { key: 'vcoEgInt', cc: 43, motionRecordable: true },
-  { key: 'cutoff', cc: 44, motionRecordable: true },
-  { key: 'vcfEgInt', cc: 45, motionRecordable: true },
-  { key: 'lfoRate', cc: 46, motionRecordable: true },
-  { key: 'lfoPitchInt', cc: 47, motionRecordable: true },
-  { key: 'lfoCutoffInt', cc: 48, motionRecordable: true },
-  { key: 'egAttack', cc: 49, motionRecordable: true },
-  { key: 'egDecayRelease', cc: 50, motionRecordable: true },
-  { key: 'egSustain', cc: 51, motionRecordable: true },
-  { key: 'delayTime', cc: 52, motionRecordable: true },
-  { key: 'delayFeedback', cc: 53, motionRecordable: true },
+export const KEYS_CONTROL_CHANGES: ControlChangeDef[] = [
+  { key: 'portamento', cc: 5 },
+  { key: 'expression', cc: 11, notes: 'MIDI-only' },
+  { key: 'voice', cc: 40 },
+  { key: 'octave', cc: 41 },
+  { key: 'detune', cc: 42 },
+  { key: 'vcoEgInt', cc: 43 },
+  { key: 'cutoff', cc: 44 },
+  { key: 'vcfEgInt', cc: 45 },
+  { key: 'lfoRate', cc: 46 },
+  { key: 'lfoPitchInt', cc: 47 },
+  { key: 'lfoCutoffInt', cc: 48 },
+  { key: 'egAttack', cc: 49 },
+  { key: 'egDecayRelease', cc: 50 },
+  { key: 'egSustain', cc: 51 },
+  { key: 'delayTime', cc: 52 },
+  { key: 'delayFeedback', cc: 53 },
 ];
 
 /** Official MIDI Implementation Chart (2013.06.10) — System Exclusive: none. */
-export const BASS_MOTION_PARAMS: MotionParamDef[] = [
-  { key: 'slideTime', cc: 5, motionRecordable: false },
-  { key: 'expression', cc: 11, motionRecordable: false },
-  { key: 'octave', cc: 40, motionRecordable: false },
-  { key: 'lfoRate', cc: 41, motionRecordable: true },
-  { key: 'lfoInt', cc: 42, motionRecordable: true },
-  { key: 'vcoPitch1', cc: 43, motionRecordable: true },
-  { key: 'vcoPitch2', cc: 44, motionRecordable: true },
-  { key: 'vcoPitch3', cc: 45, motionRecordable: true },
-  { key: 'egAttack', cc: 46, motionRecordable: true },
-  { key: 'egDecayRelease', cc: 47, motionRecordable: true },
-  { key: 'cutoffEgInt', cc: 48, motionRecordable: true },
-  { key: 'gateTime', cc: 49, motionRecordable: false },
+export const BASS_CONTROL_CHANGES: ControlChangeDef[] = [
+  { key: 'slideTime', cc: 5, notes: 'MIDI-only; not per-step Slide' },
+  { key: 'expression', cc: 11, notes: 'MIDI-only' },
+  { key: 'octave', cc: 40 },
+  { key: 'lfoRate', cc: 41 },
+  { key: 'lfoInt', cc: 42 },
+  { key: 'vcoPitch1', cc: 43 },
+  { key: 'vcoPitch2', cc: 44 },
+  { key: 'vcoPitch3', cc: 45 },
+  { key: 'egAttack', cc: 46 },
+  { key: 'egDecayRelease', cc: 47 },
+  { key: 'cutoffEgInt', cc: 48 },
+  { key: 'gateTime', cc: 49, notes: 'MIDI-only' },
 ];
 
 export const DEVICE_PROFILES: Record<DeviceModel, DeviceProfile> = {
@@ -66,16 +63,16 @@ export const DEVICE_PROFILES: Record<DeviceModel, DeviceProfile> = {
     labelKey: 'device.keys',
     maxVoices: 3,
     supportsFlux: true,
-    oscillatorLanes: 1,
-    oscillatorMidiIndependent: false,
-    motionParams: KEYS_MOTION_PARAMS,
+    controlChanges: KEYS_CONTROL_CHANGES,
     sysexSupported: false,
     midiOutSupported: false,
     patternSlots: 8,
     notes: [
       'noSysEx',
       'noMidiOut',
-      'realtimeRecTransfer',
+      'realtimeRecNotesOnly',
+      'motionNotViaMidi',
+      'activeStepNotMidi',
       'fluxFineTiming',
       'peakNotMidi',
     ],
@@ -85,16 +82,17 @@ export const DEVICE_PROFILES: Record<DeviceModel, DeviceProfile> = {
     labelKey: 'device.bass',
     maxVoices: 1,
     supportsFlux: false,
-    oscillatorLanes: 3,
-    oscillatorMidiIndependent: false,
-    motionParams: BASS_MOTION_PARAMS,
+    controlChanges: BASS_CONTROL_CHANGES,
     sysexSupported: false,
     midiOutSupported: false,
     patternSlots: 8,
     notes: [
       'noSysEx',
       'noMidiOut',
-      'realtimeRecTransfer',
+      'realtimeRecNotesOnly',
+      'motionNotViaMidi',
+      'activeStepNotMidi',
+      'slideNotViaMidi',
       'oscillatorsNotIndependent',
       'cutoffPeakNotMidi',
     ],
@@ -102,5 +100,3 @@ export const DEVICE_PROFILES: Record<DeviceModel, DeviceProfile> = {
 };
 
 export const getDeviceProfile = (device: DeviceModel): DeviceProfile => DEVICE_PROFILES[device];
-
-export const motionParamCount = (device: DeviceModel) => getDeviceProfile(device).motionParams.length;

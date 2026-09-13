@@ -19,7 +19,6 @@ export const copySequenceStep = (state: SequenceState, fromStep: number, toStep:
     note.velocity,
     note.gatePercent,
     note.tickOffset,
-    note.oscillatorLane,
   ));
   return { ...state, notes: [...withoutTarget, ...copied] };
 };
@@ -32,9 +31,7 @@ export const copyNotesEuclid = (
   const rotation = rotationAligningHitToStep(NUM_OF_STEPS, pulses, source.startStep);
   const hits = euclideanHits(NUM_OF_STEPS, pulses, rotation);
   const without = notes.filter(note =>
-    !(note.pitch === source.pitch
-      && note.oscillatorLane === source.oscillatorLane
-      && hits.includes(note.startStep)));
+    !(note.pitch === source.pitch && hits.includes(note.startStep)));
   const copies = hits.map(step => createSequenceNote(
     source.pitch,
     step,
@@ -42,7 +39,6 @@ export const copyNotesEuclid = (
     source.velocity,
     source.gatePercent,
     source.tickOffset,
-    source.oscillatorLane,
   ));
   return [...without, ...copies];
 };
@@ -61,14 +57,7 @@ export const shiftSteps = (state: SequenceState, delta: number): SequenceState =
       note.velocity,
       note.gatePercent,
       note.tickOffset,
-      note.oscillatorLane,
     )),
     stepOn: rotateBool(state.stepOn),
-    activeStep: rotateBool(state.activeStep),
-    slideStep: rotateBool(state.slideStep),
-    motionStepEnabled: state.motionStepEnabled.map(rotateBool),
-    motionValues: state.motionValues.map(param =>
-      Array.from({ length: NUM_OF_STEPS }, (_, step) =>
-        param[(step - shift + NUM_OF_STEPS) % NUM_OF_STEPS])),
   };
 };

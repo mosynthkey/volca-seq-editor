@@ -8,11 +8,8 @@ import {
 } from '@/midi/realtimeTransfer';
 import {
   createEmptySequenceState,
-  createMotionGrid,
-  createMotionPoints,
-  createMotionStepEnabled,
   normalizeSequenceState,
-  resizeMotionForDevice,
+  resizeStateForDevice,
 } from '@/types/sequenceFactory';
 import {
   createSequenceNote,
@@ -23,7 +20,6 @@ import {
   type SequenceNote,
   type SequenceState,
 } from '@/types/sequence';
-import { createMotionPattern, type MotionPatternKey } from '@/utils/motionPatterns';
 import {
   moveNotes,
   noteKeyOf,
@@ -47,19 +43,11 @@ export const useSequencerStore = defineStore('sequencer', () => {
   const bpm = ref(initial.bpm);
   const midiChannel = ref(initial.midiChannel);
   const notes = ref<SequenceNote[]>(initial.notes);
-  const motionEnabled = ref(initial.motionEnabled);
-  const motionStepEnabled = ref(initial.motionStepEnabled);
-  const motionValues = ref(initial.motionValues);
   const stepOn = ref(initial.stepOn);
-  const activeStep = ref(initial.activeStep);
-  const slideStep = ref(initial.slideStep);
   const func = ref(initial.func);
-  const motionIndex = ref(0);
-  const oscillatorLane = ref(0);
   const selectedNoteKeys = ref<NoteKey[]>([]);
   const fluxDivision = ref(1);
   const transferLoops = ref(1);
-  const transferIncludeMotion = ref(true);
   const showTransferDialog = ref(false);
   const transferProgress = ref(0);
   const transferStatus = ref<'idle' | 'countdown' | 'sending' | 'done' | 'error'>('idle');
@@ -80,12 +68,7 @@ export const useSequencerStore = defineStore('sequencer', () => {
     bpm: bpm.value,
     midiChannel: midiChannel.value,
     notes: notes.value,
-    motionEnabled: motionEnabled.value,
-    motionStepEnabled: motionStepEnabled.value,
-    motionValues: motionValues.value,
     stepOn: stepOn.value,
-    activeStep: activeStep.value,
-    slideStep: slideStep.value,
     func: func.value,
   });
 
@@ -98,15 +81,8 @@ export const useSequencerStore = defineStore('sequencer', () => {
     bpm.value = normalized.bpm;
     midiChannel.value = normalized.midiChannel;
     notes.value = normalized.notes;
-    motionEnabled.value = normalized.motionEnabled;
-    motionStepEnabled.value = normalized.motionStepEnabled;
-    motionValues.value = normalized.motionValues;
     stepOn.value = normalized.stepOn;
-    activeStep.value = normalized.activeStep;
-    slideStep.value = normalized.slideStep;
     func.value = normalized.func;
-    motionIndex.value = Math.min(motionIndex.value, Math.max(0, normalized.motionEnabled.length - 1));
-    oscillatorLane.value = Math.min(oscillatorLane.value, Math.max(0, profile.value.oscillatorLanes - 1));
     if (recordHistory) commitHistory();
   };
 
@@ -137,13 +113,11 @@ export const useSequencerStore = defineStore('sequencer', () => {
   };
 
   const setDevice = (next: DeviceModel) => {
-    const resized = resizeMotionForDevice({ ...toState(), device: next }, next);
+    const resized = resizeStateForDevice({ ...toState(), device: next }, next);
     loadFromState(resized);
   };
 
-  const visibleNotes = computed(() =>
-    notes.value.filter(note =>
-      device.value !== 'bass' || note.oscillatorLane === oscillatorLane.value));
+  const visibleNotes = computed(() => notes.value);
 
   const noteAt = (step: number, pitch: number) =>
     visibleNotes.value.find(note =>
@@ -157,15 +131,13 @@ export const useSequencerStore = defineStore('sequencer', () => {
     selectedNoteKeys.value = keys.map(key => ({
       pitch: key.pitch,
       startStep: key.startStep,
-      oscillatorLane: key.oscillatorLane ?? oscillatorLane.value,
     }));
   };
 
-  const isNoteSelected = (note: Pick<SequenceNote, 'pitch' | 'startStep' | 'oscillatorLane'>) =>
+  const isNoteSelected = (note: Pick<SequenceNote, 'pitch' | 'startStep'>) =>
     selectedNoteKeys.value.some(key => sameNoteKey(key, {
       pitch: note.pitch,
       startStep: note.startStep,
-      oscillatorLane: note.oscillatorLane,
     }));
 
   const selectNote = (note: SequenceNote | null, additive = false) => {
@@ -176,7 +148,6 @@ export const useSequencerStore = defineStore('sequencer', () => {
     const key = {
       pitch: note.pitch,
       startStep: note.startStep,
-      oscillatorLane: note.oscillatorLane,
     };
     if (additive) {
       const exists = selectedNoteKeys.value.some(item => sameNoteKey(item, key));
@@ -191,22 +162,19 @@ export const useSequencerStore = defineStore('sequencer', () => {
   const addNote = (pitch: number, startStep: number, length = 1) => {
     const start = Math.max(0, Math.min(NUM_OF_STEPS - 1, startStep));
     const len = Math.max(1, Math.min(NUM_OF_STEPS - start, length));
-    const lane = device.value === 'bass' ? oscillatorLane.value : 0;
     const withoutOverlap = notes.value.filter(note => !(
       note.pitch === pitch
-      && note.oscillatorLane === lane
       && note.startStep <= start + len - 1
       && note.startStep + note.length - 1 >= start
     ));
     for (let step = start; step < start + len; step++) {
       const voices = withoutOverlap.filter(note =>
-        note.oscillatorLane === lane
-        && note.startStep <= step
+        note.startStep <= step
         && note.startStep + note.length > step).length;
       if (voices >= profile.value.maxVoices) return false;
     }
     notes.value = [...withoutOverlap, createSequenceNote(
-      pitch, start, len, velocity.value, gatePercent.value, 0, lane,
+      pitch, start, len, velocity.value, gatePercent.value, 0,
     )];
     scheduleHistory();
     return true;
@@ -214,11 +182,7 @@ export const useSequencerStore = defineStore('sequencer', () => {
 
   const removeSelectedNotes = () => {
     if (!selectedNoteKeys.value.length) return;
-    const keySet = new Set(selectedNoteKeys.value.map(key => noteKeyOf({
-      pitch: key.pitch,
-      startStep: key.startStep,
-      oscillatorLane: key.oscillatorLane ?? 0,
-    })));
+    const keySet = new Set(selectedNoteKeys.value.map(key => noteKeyOf(key)));
     notes.value = notes.value.filter(note => !keySet.has(noteKeyOf(note)));
     clearNoteSelection();
     scheduleHistory();
@@ -231,7 +195,6 @@ export const useSequencerStore = defineStore('sequencer', () => {
     selectedNoteKeys.value = selectedNoteKeys.value.map(key => ({
       pitch: Math.max(0, Math.min(127, key.pitch + pitchDelta)),
       startStep: ((key.startStep + stepDelta) % NUM_OF_STEPS + NUM_OF_STEPS) % NUM_OF_STEPS,
-      oscillatorLane: key.oscillatorLane,
     }));
     scheduleHistory();
   };
@@ -247,8 +210,8 @@ export const useSequencerStore = defineStore('sequencer', () => {
     const clamped = Math.max(0, Math.min(MIDI_CLOCKS_PER_STEP - 1, tickOffset));
     notes.value = notes.value.map(candidate =>
       sameNoteKey(
-        { pitch: candidate.pitch, startStep: candidate.startStep, oscillatorLane: candidate.oscillatorLane },
-        { pitch: note.pitch, startStep: note.startStep, oscillatorLane: note.oscillatorLane },
+        { pitch: candidate.pitch, startStep: candidate.startStep },
+        { pitch: note.pitch, startStep: note.startStep },
       )
         ? { ...candidate, tickOffset: clamped }
         : candidate);
@@ -261,8 +224,8 @@ export const useSequencerStore = defineStore('sequencer', () => {
     const tickOffset = tick % MIDI_CLOCKS_PER_STEP;
     notes.value = notes.value.map(candidate =>
       sameNoteKey(
-        { pitch: candidate.pitch, startStep: candidate.startStep, oscillatorLane: candidate.oscillatorLane },
-        { pitch: note.pitch, startStep: note.startStep, oscillatorLane: note.oscillatorLane },
+        { pitch: candidate.pitch, startStep: candidate.startStep },
+        { pitch: note.pitch, startStep: note.startStep },
       )
         ? createSequenceNote(
           candidate.pitch,
@@ -271,64 +234,14 @@ export const useSequencerStore = defineStore('sequencer', () => {
           candidate.velocity,
           candidate.gatePercent,
           tickOffset,
-          candidate.oscillatorLane,
         )
         : candidate);
-    setNoteSelection([{ pitch: note.pitch, startStep, oscillatorLane: note.oscillatorLane }]);
+    setNoteSelection([{ pitch: note.pitch, startStep }]);
     scheduleHistory();
   };
 
   const toggleStepOn = (step: number) => {
     stepOn.value[step] = !stepOn.value[step];
-    scheduleHistory();
-  };
-
-  const toggleActiveStep = (step: number) => {
-    const next = !activeStep.value[step];
-    if (!next && activeStep.value.filter(Boolean).length <= 1) return;
-    activeStep.value[step] = next;
-    scheduleHistory();
-  };
-
-  const toggleSlideStep = (step: number) => {
-    slideStep.value[step] = !slideStep.value[step];
-    scheduleHistory();
-  };
-
-  const toggleMotionStep = (paramIndex: number, step: number) => {
-    motionStepEnabled.value[paramIndex][step] = !motionStepEnabled.value[paramIndex][step];
-    scheduleHistory();
-  };
-
-  const setMotionValue = (paramIndex: number, step: number, point: number, value: number) => {
-    const points = [...motionValues.value[paramIndex][step]];
-    points[point] = Math.max(0, Math.min(127, Math.round(value)));
-    motionValues.value[paramIndex][step] = points;
-    motionEnabled.value[paramIndex] = true;
-    motionStepEnabled.value[paramIndex][step] = true;
-    func.value = { ...func.value, motionOn: true };
-    scheduleHistory();
-  };
-
-  const clearMotionParam = (paramIndex: number) => {
-    motionEnabled.value[paramIndex] = false;
-    motionValues.value[paramIndex] = createMotionGrid(device.value, 64)[paramIndex];
-    motionStepEnabled.value[paramIndex] = createMotionStepEnabled(device.value, true)[paramIndex];
-    scheduleHistory();
-  };
-
-  const applyMotionPattern = (
-    key: MotionPatternKey,
-    options: { min?: number; max?: number; cycles?: number; offset?: number } = {},
-  ) => {
-    const values = createMotionPattern(key, options);
-    const paramIndex = motionIndex.value;
-    motionEnabled.value[paramIndex] = true;
-    func.value = { ...func.value, motionOn: true };
-    for (let stepIndex = 0; stepIndex < NUM_OF_STEPS; stepIndex++) {
-      motionValues.value[paramIndex][stepIndex] = createMotionPoints(values[stepIndex]);
-      motionStepEnabled.value[paramIndex][stepIndex] = true;
-    }
     scheduleHistory();
   };
 
@@ -357,10 +270,7 @@ export const useSequencerStore = defineStore('sequencer', () => {
     const buffer = await file.arrayBuffer();
     const parsed = parseSmf(buffer);
     const imported = extractStepNotes(parsed.events, parsed.ticksPerQuarter, 4, barOffset);
-    notes.value = imported.map(note => ({
-      ...note,
-      oscillatorLane: device.value === 'bass' ? oscillatorLane.value : 0,
-    }));
+    notes.value = imported;
     scheduleHistory();
   };
 
@@ -404,11 +314,9 @@ export const useSequencerStore = defineStore('sequencer', () => {
     }
     const events = buildRealtimeTransferEvents(toState(), {
       loops: transferLoops.value,
-      includeMotion: transferIncludeMotion.value,
-      bassLane: oscillatorLane.value,
     });
     const summary = countTransferSummary(events);
-    transferSummary.value = `${summary.noteOns} notes / ${summary.ccs} CC / ${summary.clocks} clocks`;
+    transferSummary.value = `${summary.noteOns} notes / ${summary.clocks} clocks`;
     transferStatus.value = 'countdown';
     transferProgress.value = 0;
     midi.transferring = true;
@@ -455,19 +363,11 @@ export const useSequencerStore = defineStore('sequencer', () => {
     midiChannel,
     notes,
     visibleNotes,
-    motionEnabled,
-    motionStepEnabled,
-    motionValues,
     stepOn,
-    activeStep,
-    slideStep,
     func,
-    motionIndex,
-    oscillatorLane,
     selectedNoteKeys,
     fluxDivision,
     transferLoops,
-    transferIncludeMotion,
     showTransferDialog,
     transferProgress,
     transferStatus,
@@ -491,12 +391,6 @@ export const useSequencerStore = defineStore('sequencer', () => {
     setTickOffset,
     moveNoteToTick,
     toggleStepOn,
-    toggleActiveStep,
-    toggleSlideStep,
-    toggleMotionStep,
-    setMotionValue,
-    clearMotionParam,
-    applyMotionPattern,
     clearAll,
     applyClearStep,
     applyCopyStep,

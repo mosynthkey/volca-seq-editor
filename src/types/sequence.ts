@@ -4,7 +4,6 @@ export const MIDI_PPQN = 24;
 /** 16 steps spanning 4 quarter notes → 96 MIDI clocks per pattern. */
 export const MIDI_CLOCKS_PER_STEP = 6;
 export const MIDI_CLOCKS_PER_PATTERN = NUM_OF_STEPS * MIDI_CLOCKS_PER_STEP;
-export const MOTION_POINT_COUNT = 5;
 
 export type DeviceModel = 'keys' | 'bass';
 
@@ -16,19 +15,11 @@ export interface SequenceNote {
   gatePercent: number;
   /** Tick offset within the start step (0 .. clocksPerStep-1). Used for Keys Flux. */
   tickOffset: number;
-  /** Bass: which virtual oscillator lane this note belongs to (0–2). MIDI cannot address VCOs separately. */
-  oscillatorLane: number;
 }
 
 export interface SequenceFunc {
-  motionOn: boolean;
-  motionSmooth: boolean;
-  /** Keys: record/play without quantizing to step starts. */
+  /** Keys: record/play without quantizing to step starts. Requires Flux ON on the device. */
   flux: boolean;
-  /** Tempo division: 0=1/1, 1=1/2, 2=1/4 of the knob / clock tempo. */
-  tempo: number;
-  /** Bass: slide flag per step (sent as CC5 Slide Time when recording). */
-  slideEnabled: boolean;
 }
 
 export interface SequenceState {
@@ -39,13 +30,8 @@ export interface SequenceState {
   bpm: number;
   midiChannel: number;
   notes: SequenceNote[];
-  motionEnabled: boolean[];
-  motionStepEnabled: boolean[][];
-  motionValues: number[][][];
+  /** Mute for transfer (no Note On). Editor convenience — not hardware Active Step. */
   stepOn: boolean[];
-  activeStep: boolean[];
-  /** Bass: per-step slide on/off (hardware-style). */
-  slideStep: boolean[];
   func: SequenceFunc;
 }
 
@@ -55,9 +41,6 @@ const clamp = (value: number, min: number, max: number) =>
 export const createBoolRow = (value = true): boolean[] =>
   Array.from({ length: NUM_OF_STEPS }, () => value);
 
-export const createMotionPoints = (value = 64): number[] =>
-  Array.from({ length: MOTION_POINT_COUNT }, () => clamp(value, 0, 127));
-
 export const createSequenceNote = (
   pitch: number,
   startStep: number,
@@ -65,7 +48,6 @@ export const createSequenceNote = (
   velocity = 100,
   gatePercent = 80,
   tickOffset = 0,
-  oscillatorLane = 0,
 ): SequenceNote => ({
   pitch: clamp(pitch, 0, 127),
   startStep: clamp(startStep, 0, NUM_OF_STEPS - 1),
@@ -73,15 +55,10 @@ export const createSequenceNote = (
   velocity: clamp(velocity, 1, 127),
   gatePercent: clamp(gatePercent, 0, 100),
   tickOffset: Math.max(0, tickOffset),
-  oscillatorLane: clamp(oscillatorLane, 0, 2),
 });
 
 export const createEmptyFunc = (): SequenceFunc => ({
-  motionOn: false,
-  motionSmooth: false,
   flux: false,
-  tempo: 0,
-  slideEnabled: false,
 });
 
 export const noteAbsoluteTick = (note: SequenceNote): number =>

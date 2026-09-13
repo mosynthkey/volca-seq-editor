@@ -9,7 +9,7 @@
         v-for="step in 16"
         :key="step"
         class="step-cell header-cell"
-        :class="{ beat: (step - 1) % 4 === 0, muted: !sequence.stepOn[step - 1], skipped: !sequence.activeStep[step - 1] }"
+        :class="{ beat: (step - 1) % 4 === 0, muted: !sequence.stepOn[step - 1] }"
         @pointerdown="startStepCopy(step - 1, $event)"
         @pointerenter="moveStepCopy(step - 1)"
         @pointerup="endStepCopy"
@@ -26,30 +26,6 @@
           class="flag sound"
           :class="{ on: sequence.stepOn[step - 1] }"
           @click="sequence.toggleStepOn(step - 1)"
-        />
-      </div>
-    </div>
-
-    <div class="roll-row step-flags">
-      <div class="pitch-gutter">{{ t('sequence.activeStep') }}</div>
-      <div v-for="step in 16" :key="step" class="step-cell flag-cell" :class="{ beat: (step - 1) % 4 === 0 }">
-        <button
-          type="button"
-          class="flag"
-          :class="{ on: sequence.activeStep[step - 1] }"
-          @click="sequence.toggleActiveStep(step - 1)"
-        />
-      </div>
-    </div>
-
-    <div v-if="sequence.device === 'bass'" class="roll-row step-flags">
-      <div class="pitch-gutter">{{ t('sequence.slide') }}</div>
-      <div v-for="step in 16" :key="step" class="step-cell flag-cell" :class="{ beat: (step - 1) % 4 === 0 }">
-        <button
-          type="button"
-          class="flag"
-          :class="{ on: sequence.slideStep[step - 1] }"
-          @click="sequence.toggleSlideStep(step - 1)"
         />
       </div>
     </div>
@@ -80,85 +56,12 @@
         </div>
       </div>
     </div>
-
-    <div class="roll-row motion-row">
-      <div class="pitch-gutter motion-gutter">
-        <span class="motion-gutter__label">{{ t('sequence.motion') }}</span>
-        <v-select
-          v-model="sequence.motionIndex"
-          :items="motionItems"
-          item-title="label"
-          item-value="value"
-          density="compact"
-          hide-details
-          variant="underlined"
-          class="motion-target-select"
-        />
-        <div class="motion-gutter__actions">
-          <AppToggle
-            v-model="sequence.motionEnabled[sequence.motionIndex]"
-            :aria-label="t('sequence.motionEnable')"
-          />
-          <button
-            type="button"
-            class="motion-gutter__clear"
-            :title="t('sequence.motionClear')"
-            :aria-label="t('sequence.motionClear')"
-            @click="sequence.clearMotionParam(sequence.motionIndex)"
-          >
-            <Trash2 :size="16" />
-          </button>
-        </div>
-      </div>
-      <div
-        v-for="step in 16"
-        :key="step"
-        class="step-cell motion-col"
-        :class="{ beat: (step - 1) % 4 === 0, off: !sequence.motionStepEnabled[sequence.motionIndex][step - 1] }"
-        @pointerdown="paintMotion(step - 1, $event)"
-        @pointermove="dragMotion(step - 1, $event)"
-        @pointerup="motionDragging = false"
-      >
-        <template v-if="sequence.func.motionSmooth">
-          <div
-            v-for="point in 5"
-            :key="point"
-            class="motion-fill point"
-            :style="{
-              height: `${(sequence.motionValues[sequence.motionIndex][step - 1][point - 1] / 127) * 100}%`,
-              left: `${(point - 1) * 20}%`,
-              width: '20%',
-            }"
-          />
-        </template>
-        <div
-          v-else
-          class="motion-fill"
-          :style="{ height: `${(sequence.motionValues[sequence.motionIndex][step - 1][0] / 127) * 100}%` }"
-        />
-        <span class="motion-value">{{ sequence.motionValues[sequence.motionIndex][step - 1][0] }}</span>
-      </div>
-    </div>
-
-    <div class="roll-row step-flags">
-      <div class="pitch-gutter">{{ t('sequence.motionStep') }}</div>
-      <div v-for="step in 16" :key="step" class="step-cell flag-cell" :class="{ beat: (step - 1) % 4 === 0 }">
-        <button
-          type="button"
-          class="flag"
-          :class="{ on: sequence.motionStepEnabled[sequence.motionIndex][step - 1] }"
-          @click="sequence.toggleMotionStep(sequence.motionIndex, step - 1)"
-        />
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Trash2 } from '@lucide/vue'
-import AppToggle from '@/components/AppToggle.vue'
 import { useSequencerStore } from '@/stores/sequencerStore'
 import type { SequenceNote } from '@/types/sequence'
 
@@ -172,16 +75,9 @@ const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 
 const isBlackKey = (pitch: number) => [1, 3, 6, 8, 10].includes(pitch % 12)
 const noteLabel = (pitch: number) => `${NOTE_NAMES[pitch % 12]}${Math.floor(pitch / 12) - 1}`
 
-const motionItems = computed(() =>
-  sequence.profile.motionParams.map((param, paramIndex) => ({
-    label: `${t(`motionParams.${param.key}`)} (CC${param.cc})`,
-    value: paramIndex,
-  })))
-
 const rollBody = ref<HTMLElement | null>(null)
 const stepCopy = ref<{ from: number; to: number } | null>(null)
 const drag = ref<{ kind: 'move' | 'resize'; pitch: number; step: number; originStep: number } | null>(null)
-const motionDragging = ref(false)
 
 const cellClass = (step: number, pitch: number) => {
   const note = sequence.noteAt(step, pitch)
@@ -241,23 +137,6 @@ const endStepCopy = () => {
     sequence.applyCopyStep(stepCopy.value.from, stepCopy.value.to)
   }
   stepCopy.value = null
-}
-
-const paintMotion = (step: number, event: PointerEvent) => {
-  motionDragging.value = true
-  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
-  const ratio = 1 - Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
-  const value = Math.round(ratio * 127)
-  if (sequence.func.motionSmooth) {
-    const point = Math.min(4, Math.floor(((event.clientX - rect.left) / rect.width) * 5))
-    sequence.setMotionValue(sequence.motionIndex, step, point, value)
-  } else {
-    sequence.setMotionValue(sequence.motionIndex, step, 0, value)
-  }
-}
-
-const dragMotion = (step: number, event: PointerEvent) => {
-  if (motionDragging.value) paintMotion(step, event)
 }
 
 const onKey = (event: KeyboardEvent) => {

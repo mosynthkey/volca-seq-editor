@@ -16,15 +16,6 @@
               :disabled="midi.transferring"
             />
           </v-col>
-          <v-col cols="6" class="d-flex align-center">
-            <v-checkbox
-              v-model="sequence.transferIncludeMotion"
-              :label="t('sequence.includeMotion')"
-              density="compact"
-              hide-details
-              :disabled="midi.transferring"
-            />
-          </v-col>
         </v-row>
         <p v-if="sequence.transferStatus === 'countdown'">{{ t('sequence.transferCountdown') }}</p>
         <p v-else-if="sequence.transferStatus === 'sending'">{{ t('sequence.transferSending') }}</p>

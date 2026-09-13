@@ -3,7 +3,6 @@
   <p class="hint-banner">{{ t('sequence.transferHint') }}</p>
   <PianoRollEditor />
   <FluxStepEditor v-if="sequence.device === 'keys' && sequence.func.flux" />
-  <MotionControlPanel />
   <SequenceFuncPanel />
   <TransferDialog />
   <EuclidCopyDialog
@@ -20,7 +19,6 @@ import { useSequencerStore } from '@/stores/sequencerStore'
 import type { SequenceNote } from '@/types/sequence'
 import SequenceToolbar from './SequenceToolbar.vue'
 import PianoRollEditor from './PianoRollEditor.vue'
-import MotionControlPanel from './MotionControlPanel.vue'
 import SequenceFuncPanel from './SequenceFuncPanel.vue'
 import TransferDialog from './TransferDialog.vue'
 import FluxStepEditor from './FluxStepEditor.vue'
