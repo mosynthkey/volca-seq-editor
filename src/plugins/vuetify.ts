@@ -2,16 +2,16 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 
-/** Gold faceplate — volca keys */
+/** Champagne faceplate — volca keys (#bba99a from hardware panel) */
 export const keysThemeColors = {
-  background: '#1c1712',
-  surface: '#2a2218',
-  primary: '#d4a84a',
-  secondary: '#e8c56a',
-  success: '#c9a227',
-  info: '#e8c56a',
-  warning: '#d4a84a',
-  error: '#e86b5a',
+  background: '#1a1613',
+  surface: '#2a2420',
+  primary: '#bba99a',
+  secondary: '#d4c4b6',
+  success: '#a89484',
+  info: '#d4c4b6',
+  warning: '#bba99a',
+  error: '#c86b5a',
 }
 
 /** Silver faceplate + red LED — volca bass */

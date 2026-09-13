@@ -1,25 +1,26 @@
 :root,
 [data-device='keys'] {
   color-scheme: dark;
-  --volca-bg: #1c1712;
-  --volca-panel: rgba(42, 34, 24, 0.9);
-  --volca-panel-solid: #2a2218;
-  --volca-raised: #3a2f22;
-  --volca-sunken: #120e0a;
-  --volca-line: rgba(212, 168, 74, 0.2);
-  --volca-line-strong: rgba(212, 168, 74, 0.42);
-  --volca-accent: #d4a84a;
-  --volca-accent-bright: #efcc78;
-  --volca-accent-soft: rgba(212, 168, 74, 0.16);
-  --volca-text: #f4efe4;
-  --volca-muted: #b3a48c;
-  --volca-note: #e0b85a;
-  --volca-note-soft: rgba(224, 184, 90, 0.45);
-  --volca-flag: #c9a227;
-  --volca-led: #e8c56a;
-  --volca-glow-a: rgba(232, 197, 106, 0.18);
-  --volca-glow-b: rgba(212, 168, 74, 0.2);
-  --volca-header-bg: rgba(18, 14, 10, 0.78);
+  /* Faceplate sample from hardware: #bba99a */
+  --volca-bg: #1a1613;
+  --volca-panel: rgba(42, 36, 32, 0.92);
+  --volca-panel-solid: #2a2420;
+  --volca-raised: #3a322c;
+  --volca-sunken: #100e0c;
+  --volca-line: rgba(187, 169, 154, 0.22);
+  --volca-line-strong: rgba(187, 169, 154, 0.44);
+  --volca-accent: #bba99a;
+  --volca-accent-bright: #d4c4b6;
+  --volca-accent-soft: rgba(187, 169, 154, 0.16);
+  --volca-text: #f2ebe4;
+  --volca-muted: #a8988a;
+  --volca-note: #cbb5a4;
+  --volca-note-soft: rgba(203, 181, 164, 0.48);
+  --volca-flag: #bba99a;
+  --volca-led: #d4c4b6;
+  --volca-glow-a: rgba(187, 169, 154, 0.2);
+  --volca-glow-b: rgba(212, 196, 182, 0.14);
+  --volca-header-bg: rgba(16, 14, 12, 0.8);
   --volca-type-label: 13px;
   --volca-type-body: 14px;
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
