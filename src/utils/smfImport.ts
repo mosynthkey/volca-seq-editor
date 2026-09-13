@@ -99,7 +99,7 @@ export const extractStepNotes = (
     const startStep = Math.min(15, Math.floor(localStart / ticksPerStep));
     const duration = Math.max(1, endTick - open.startTick);
     const length = Math.max(1, Math.min(16 - startStep, Math.ceil(duration / ticksPerStep)));
-    notes.push(createSequenceNote(pitch, startStep, length, open.velocity, 80));
+    notes.push(createSequenceNote(pitch, startStep, length));
   };
 
   for (const event of events) {

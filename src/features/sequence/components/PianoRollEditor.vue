@@ -45,9 +45,6 @@
           @pointerdown="onCellDown(step - 1, pitch, $event)"
           @contextmenu.prevent="onContext(step - 1, pitch)"
         >
-          <span v-if="isNoteStart(step - 1, pitch)" class="note-cell__label">
-            {{ sequence.noteAt(step - 1, pitch)?.velocity }}
-          </span>
           <span
             v-if="isNoteEnd(step - 1, pitch)"
             class="note-resize-handle"
@@ -89,7 +86,6 @@ const cellClass = (step: number, pitch: number) => {
   }
 }
 
-const isNoteStart = (step: number, pitch: number) => sequence.noteAt(step, pitch)?.startStep === step
 const isNoteEnd = (step: number, pitch: number) => {
   const note = sequence.noteAt(step, pitch)
   return Boolean(note && note.startStep + note.length - 1 === step)

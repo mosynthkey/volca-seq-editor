@@ -16,8 +16,6 @@ export const copySequenceStep = (state: SequenceState, fromStep: number, toStep:
     note.pitch,
     toStep,
     Math.min(note.length, NUM_OF_STEPS - toStep),
-    note.velocity,
-    note.gatePercent,
     note.tickOffset,
   ));
   return { ...state, notes: [...withoutTarget, ...copied] };
@@ -36,8 +34,6 @@ export const copyNotesEuclid = (
     source.pitch,
     step,
     Math.min(source.length, NUM_OF_STEPS - step),
-    source.velocity,
-    source.gatePercent,
     source.tickOffset,
   ));
   return [...without, ...copies];
@@ -54,8 +50,6 @@ export const shiftSteps = (state: SequenceState, delta: number): SequenceState =
       note.pitch,
       (note.startStep + shift) % NUM_OF_STEPS,
       Math.min(note.length, NUM_OF_STEPS - ((note.startStep + shift) % NUM_OF_STEPS)),
-      note.velocity,
-      note.gatePercent,
       note.tickOffset,
     )),
     stepOn: rotateBool(state.stepOn),

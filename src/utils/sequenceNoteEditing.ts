@@ -52,8 +52,6 @@ export const moveNotes = (
       Math.max(0, Math.min(127, note.pitch + pitchDelta)),
       startStep,
       length,
-      note.velocity,
-      note.gatePercent,
       note.tickOffset,
     );
   });
@@ -92,8 +90,6 @@ export const resizeNotes = (
     note.pitch,
     note.startStep,
     Math.max(1, Math.min(NUM_OF_STEPS - note.startStep, note.length + Math.round(lengthDelta))),
-    note.velocity,
-    note.gatePercent,
     note.tickOffset,
   ));
   let next = notes.filter(note => !keySet.has(noteKeyOf(note)));

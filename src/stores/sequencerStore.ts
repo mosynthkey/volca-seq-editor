@@ -38,8 +38,7 @@ export const useSequencerStore = defineStore('sequencer', () => {
   const initial = createEmptySequenceState('keys');
   const device = ref<DeviceModel>(initial.device);
   const name = ref(initial.name);
-  const velocity = ref(initial.velocity);
-  const gatePercent = ref(initial.gatePercent);
+
   const bpm = ref(initial.bpm);
   const midiChannel = ref(initial.midiChannel);
   const notes = ref<SequenceNote[]>(initial.notes);
@@ -63,8 +62,6 @@ export const useSequencerStore = defineStore('sequencer', () => {
   const toState = (): SequenceState => ({
     device: device.value,
     name: name.value,
-    velocity: velocity.value,
-    gatePercent: gatePercent.value,
     bpm: bpm.value,
     midiChannel: midiChannel.value,
     notes: notes.value,
@@ -76,8 +73,6 @@ export const useSequencerStore = defineStore('sequencer', () => {
     const normalized = normalizeSequenceState(state, state.device);
     device.value = normalized.device;
     name.value = normalized.name;
-    velocity.value = normalized.velocity;
-    gatePercent.value = normalized.gatePercent;
     bpm.value = normalized.bpm;
     midiChannel.value = normalized.midiChannel;
     notes.value = normalized.notes;
@@ -174,7 +169,7 @@ export const useSequencerStore = defineStore('sequencer', () => {
       if (voices >= profile.value.maxVoices) return false;
     }
     notes.value = [...withoutOverlap, createSequenceNote(
-      pitch, start, len, velocity.value, gatePercent.value, 0,
+      pitch, start, len, 0,
     )];
     scheduleHistory();
     return true;
@@ -231,8 +226,6 @@ export const useSequencerStore = defineStore('sequencer', () => {
           candidate.pitch,
           startStep,
           Math.min(candidate.length, NUM_OF_STEPS - startStep),
-          candidate.velocity,
-          candidate.gatePercent,
           tickOffset,
         )
         : candidate);
@@ -357,8 +350,6 @@ export const useSequencerStore = defineStore('sequencer', () => {
   return {
     device,
     name,
-    velocity,
-    gatePercent,
     bpm,
     midiChannel,
     notes,

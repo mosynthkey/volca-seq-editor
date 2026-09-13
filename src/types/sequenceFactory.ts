@@ -22,22 +22,16 @@ export const normalizeSequenceState = (
   fallbackDevice: DeviceModel = 'keys',
 ): SequenceState => {
   const device = raw?.device === 'bass' || raw?.device === 'keys' ? raw.device : fallbackDevice;
-  const velocity = clamp(raw?.velocity ?? 100, 1, 127);
-  const gatePercent = clamp(raw?.gatePercent ?? 80, 0, 100);
   const funcRaw: Partial<SequenceFunc> = raw?.func ?? {};
   return {
     device,
     name: typeof raw?.name === 'string' ? raw.name : '',
-    velocity,
-    gatePercent,
     bpm: clamp(raw?.bpm ?? 120, 10, 600),
     midiChannel: clamp(raw?.midiChannel ?? 1, 1, 16),
     notes: (raw?.notes ?? []).map((note: SequenceNote) => createSequenceNote(
       note.pitch,
       note.startStep,
       note.length,
-      note.velocity ?? velocity,
-      note.gatePercent ?? gatePercent,
       note.tickOffset ?? 0,
     )),
     stepOn: asBoolRow(raw?.stepOn, true),

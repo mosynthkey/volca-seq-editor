@@ -21,7 +21,7 @@ Write patterns into the hardware sequencer via **REAL TIME REC**:
 
 What can be written via MIDI REAL TIME REC:
 
-- Notes (pitch, timing, velocity, gate length via Note Off)
+- Notes (pitch, timing; fixed velocity; length via Note Off)
 - MIDI Clock / Start / Stop
 - Keys Flux fine timing (`tickOffset`) when Flux is ON on the device
 

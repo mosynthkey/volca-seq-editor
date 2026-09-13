@@ -4,6 +4,8 @@ export const MIDI_PPQN = 24;
 /** 16 steps spanning 4 quarter notes → 96 MIDI clocks per pattern. */
 export const MIDI_CLOCKS_PER_STEP = 6;
 export const MIDI_CLOCKS_PER_PATTERN = NUM_OF_STEPS * MIDI_CLOCKS_PER_STEP;
+/** Fixed Note On velocity for REAL TIME REC (no per-note velocity editing). */
+export const DEFAULT_NOTE_VELOCITY = 100;
 
 export type DeviceModel = 'keys' | 'bass';
 
@@ -11,8 +13,6 @@ export interface SequenceNote {
   pitch: number;
   startStep: number;
   length: number;
-  velocity: number;
-  gatePercent: number;
   /** Tick offset within the start step (0 .. clocksPerStep-1). Used for Keys Flux. */
   tickOffset: number;
 }
@@ -25,8 +25,6 @@ export interface SequenceFunc {
 export interface SequenceState {
   device: DeviceModel;
   name: string;
-  velocity: number;
-  gatePercent: number;
   bpm: number;
   midiChannel: number;
   notes: SequenceNote[];
@@ -45,15 +43,11 @@ export const createSequenceNote = (
   pitch: number,
   startStep: number,
   length: number,
-  velocity = 100,
-  gatePercent = 80,
   tickOffset = 0,
 ): SequenceNote => ({
   pitch: clamp(pitch, 0, 127),
   startStep: clamp(startStep, 0, NUM_OF_STEPS - 1),
   length: Math.max(1, length),
-  velocity: clamp(velocity, 1, 127),
-  gatePercent: clamp(gatePercent, 0, 100),
   tickOffset: Math.max(0, tickOffset),
 });
 
@@ -64,11 +58,5 @@ export const createEmptyFunc = (): SequenceFunc => ({
 export const noteAbsoluteTick = (note: SequenceNote): number =>
   note.startStep * MIDI_CLOCKS_PER_STEP + note.tickOffset;
 
-export const noteEndTick = (note: SequenceNote): number => {
-  const start = noteAbsoluteTick(note);
-  const durationClocks = Math.max(
-    1,
-    Math.round((note.length - 1) * MIDI_CLOCKS_PER_STEP + (note.gatePercent / 100) * MIDI_CLOCKS_PER_STEP),
-  );
-  return start + durationClocks;
-};
+export const noteEndTick = (note: SequenceNote): number =>
+  noteAbsoluteTick(note) + Math.max(1, note.length * MIDI_CLOCKS_PER_STEP);

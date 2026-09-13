@@ -1,4 +1,5 @@
 import {
+  DEFAULT_NOTE_VELOCITY,
   MIDI_CLOCKS_PER_PATTERN,
   MIDI_CLOCKS_PER_STEP,
   MIDI_PPQN,
@@ -77,11 +78,11 @@ const scheduleNote = (
   const endTick = flux
     ? loopOffset + noteEndTick(note)
     : loopOffset + note.startStep * MIDI_CLOCKS_PER_STEP
-      + Math.max(1, Math.round(note.length * MIDI_CLOCKS_PER_STEP * (note.gatePercent / 100)));
+      + Math.max(1, note.length * MIDI_CLOCKS_PER_STEP);
 
   events.push({
     tick: startTick,
-    bytes: [channelStatus(0x90, channel), note.pitch & 0x7f, note.velocity & 0x7f],
+    bytes: [channelStatus(0x90, channel), note.pitch & 0x7f, DEFAULT_NOTE_VELOCITY],
     label: `noteOn ${note.pitch}`,
   });
   events.push({
