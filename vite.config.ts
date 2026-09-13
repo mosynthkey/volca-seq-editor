@@ -4,6 +4,7 @@ import vuetify from 'vite-plugin-vuetify'
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig(({ mode }) => ({
+  // GitHub Pages project site: https://<user>.github.io/volca-seq-editor/
   base: mode === 'desktop' ? './' : process.env.NODE_ENV === 'production' ? '/volca-seq-editor/' : '/',
   define: {
     'import.meta.env.VITE_APP_RUNTIME': JSON.stringify(mode === 'desktop' ? 'desktop' : 'web'),

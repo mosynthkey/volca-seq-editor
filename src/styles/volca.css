@@ -1,23 +1,51 @@
-:root {
+:root,
+[data-device='keys'] {
   color-scheme: dark;
-  --volca-bg: #1a2228;
-  --volca-panel: rgba(36, 48, 56, 0.88);
-  --volca-panel-solid: #243038;
-  --volca-raised: #2e3d48;
-  --volca-sunken: #12181d;
-  --volca-line: rgba(196, 165, 116, 0.16);
-  --volca-line-strong: rgba(196, 165, 116, 0.34);
-  --volca-accent: #c4a574;
-  --volca-accent-bright: #dfc49a;
-  --volca-accent-soft: rgba(196, 165, 116, 0.14);
-  --volca-text: #eef3f6;
-  --volca-muted: #9aadb8;
-  --volca-teal: #3ecfbe;
-  --volca-pink: #e86b8a;
+  --volca-bg: #1c1712;
+  --volca-panel: rgba(42, 34, 24, 0.9);
+  --volca-panel-solid: #2a2218;
+  --volca-raised: #3a2f22;
+  --volca-sunken: #120e0a;
+  --volca-line: rgba(212, 168, 74, 0.2);
+  --volca-line-strong: rgba(212, 168, 74, 0.42);
+  --volca-accent: #d4a84a;
+  --volca-accent-bright: #efcc78;
+  --volca-accent-soft: rgba(212, 168, 74, 0.16);
+  --volca-text: #f4efe4;
+  --volca-muted: #b3a48c;
+  --volca-note: #e0b85a;
+  --volca-note-soft: rgba(224, 184, 90, 0.45);
+  --volca-flag: #c9a227;
+  --volca-led: #e8c56a;
+  --volca-glow-a: rgba(232, 197, 106, 0.18);
+  --volca-glow-b: rgba(212, 168, 74, 0.2);
+  --volca-header-bg: rgba(18, 14, 10, 0.78);
   --volca-type-label: 13px;
   --volca-type-body: 14px;
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
   font-size: var(--volca-type-body);
+}
+
+[data-device='bass'] {
+  --volca-bg: #12161a;
+  --volca-panel: rgba(30, 38, 46, 0.92);
+  --volca-panel-solid: #1e262e;
+  --volca-raised: #2a343e;
+  --volca-sunken: #0a0d10;
+  --volca-line: rgba(197, 206, 214, 0.18);
+  --volca-line-strong: rgba(197, 206, 214, 0.38);
+  --volca-accent: #c5ced6;
+  --volca-accent-bright: #e8eef3;
+  --volca-accent-soft: rgba(197, 206, 214, 0.14);
+  --volca-text: #eef2f5;
+  --volca-muted: #8f9ba6;
+  --volca-note: #d7dee4;
+  --volca-note-soft: rgba(215, 222, 228, 0.42);
+  --volca-flag: #e53935;
+  --volca-led: #e53935;
+  --volca-glow-a: rgba(229, 57, 53, 0.16);
+  --volca-glow-b: rgba(197, 206, 214, 0.14);
+  --volca-header-bg: rgba(10, 13, 16, 0.8);
 }
 
 html, body, #app {
@@ -25,10 +53,11 @@ html, body, #app {
   min-width: 720px;
   min-height: 100%;
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(62, 207, 190, 0.12), transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(196, 165, 116, 0.14), transparent 50%),
+    radial-gradient(1100px 560px at 8% -12%, var(--volca-glow-a), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, var(--volca-glow-b), transparent 50%),
     var(--volca-bg);
   color: var(--volca-text);
+  transition: background 0.35s ease, color 0.25s ease;
   user-select: none;
 }
 
@@ -48,8 +77,9 @@ input, textarea, [contenteditable="true"] {
   gap: 16px;
   padding: 12px 18px;
   border-bottom: 1px solid var(--volca-line);
-  background: rgba(18, 24, 29, 0.72);
+  background: var(--volca-header-bg);
   backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .app-brand {
@@ -65,12 +95,38 @@ input, textarea, [contenteditable="true"] {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.04em;
+  transition: color 0.3s ease;
 }
 
 .app-brand__sub {
   margin: 0;
   color: var(--volca-muted);
   font-size: 12px;
+}
+
+.device-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--volca-line-strong);
+  border-radius: 999px;
+  background: var(--volca-accent-soft);
+  color: var(--volca-accent-bright);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.device-chip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--volca-led);
+  box-shadow: 0 0 8px var(--volca-led);
 }
 
 .app-main {
@@ -92,6 +148,7 @@ input, textarea, [contenteditable="true"] {
   border-radius: 12px;
   background: var(--volca-panel);
   overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .editor-toolbar {
@@ -101,7 +158,7 @@ input, textarea, [contenteditable="true"] {
   flex-wrap: wrap;
   padding: 10px 12px;
   border-bottom: 1px solid var(--volca-line);
-  background: rgba(18, 24, 29, 0.45);
+  background: rgba(0, 0, 0, 0.28);
 }
 
 .toolbar-group {
@@ -123,7 +180,8 @@ input, textarea, [contenteditable="true"] {
   font-size: 12px;
   line-height: 1.45;
   border-bottom: 1px solid var(--volca-line);
-  background: rgba(62, 207, 190, 0.06);
+  background: var(--volca-accent-soft);
+  transition: background 0.3s ease;
 }
 
 .side-panel {
@@ -142,6 +200,7 @@ input, textarea, [contenteditable="true"] {
   color: var(--volca-accent);
   font-size: 13px;
   letter-spacing: 0.06em;
+  transition: color 0.3s ease;
 }
 
 .note-list {
@@ -172,11 +231,11 @@ input, textarea, [contenteditable="true"] {
   color: var(--volca-muted);
   font-size: 11px;
   border-right: 1px solid var(--volca-line);
-  background: rgba(18, 24, 29, 0.5);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .pitch-gutter.black-key {
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(0, 0, 0, 0.5);
   color: var(--volca-accent-bright);
 }
 
@@ -188,7 +247,7 @@ input, textarea, [contenteditable="true"] {
 }
 
 .step-cell.beat {
-  background: rgba(196, 165, 116, 0.05);
+  background: var(--volca-accent-soft);
 }
 
 .header-cell {
@@ -205,7 +264,7 @@ input, textarea, [contenteditable="true"] {
 }
 
 .header-cell.skipped {
-  color: var(--volca-pink);
+  color: var(--volca-led);
 }
 
 .flag-cell {
@@ -221,11 +280,13 @@ input, textarea, [contenteditable="true"] {
   border-radius: 3px;
   background: transparent;
   cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .flag.on {
-  background: var(--volca-teal);
-  border-color: var(--volca-teal);
+  background: var(--volca-flag);
+  border-color: var(--volca-flag);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--volca-flag) 55%, transparent);
 }
 
 .flag.sound.on {
@@ -244,7 +305,7 @@ input, textarea, [contenteditable="true"] {
 }
 
 .note-cell.has-note {
-  background: linear-gradient(180deg, rgba(62, 207, 190, 0.85), rgba(62, 207, 190, 0.45));
+  background: linear-gradient(180deg, var(--volca-note), var(--volca-note-soft));
 }
 
 .note-cell.selected {
@@ -261,8 +322,12 @@ input, textarea, [contenteditable="true"] {
   left: 3px;
   top: 2px;
   font-size: 9px;
-  color: #0b2422;
+  color: #1a1208;
   font-weight: 700;
+}
+
+[data-device='bass'] .note-cell__label {
+  color: #101418;
 }
 
 .note-resize-handle {
@@ -292,7 +357,7 @@ input, textarea, [contenteditable="true"] {
 
 .motion-fill {
   width: 100%;
-  background: linear-gradient(180deg, rgba(196, 165, 116, 0.95), rgba(196, 165, 116, 0.35));
+  background: linear-gradient(180deg, var(--volca-accent), var(--volca-accent-soft));
 }
 
 .motion-fill.point {
@@ -333,11 +398,12 @@ input, textarea, [contenteditable="true"] {
 
 .flux-tick.on {
   height: 22px;
-  background: var(--volca-teal);
+  background: var(--volca-led);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--volca-led) 60%, transparent);
 }
 
 .flux-tick.step-start {
-  background: rgba(196, 165, 116, 0.35);
+  background: var(--volca-accent-soft);
 }
 
 .log-panel {
@@ -347,4 +413,10 @@ input, textarea, [contenteditable="true"] {
   font-size: 11px;
   color: var(--volca-muted);
   white-space: pre-wrap;
+}
+
+/* Smooth Vuetify surface tint when theme swaps */
+.v-application {
+  background: transparent !important;
+  transition: background-color 0.3s ease;
 }

@@ -1,11 +1,16 @@
 <template>
-  <v-app>
-    <div class="app-shell">
+  <v-app :theme="sequence.device">
+    <div class="app-shell" :data-device="sequence.device">
       <header class="app-header">
         <div class="app-brand">
           <h1 class="app-brand__title">{{ t('app.title') }}</h1>
           <p class="app-brand__sub">{{ t('app.subtitle') }}</p>
         </div>
+
+        <span class="device-chip" aria-hidden="true">
+          <span class="device-chip__dot" />
+          {{ sequence.device === 'keys' ? 'KEYS' : 'BASS' }}
+        </span>
 
         <v-select
           v-model="deviceModel"
@@ -26,7 +31,7 @@
           style="max-width: 260px"
         />
 
-        <v-btn size="small" variant="tonal" @click="midi.initialize()">
+        <v-btn size="small" variant="tonal" color="primary" @click="midi.initialize()">
           {{ t('midi.connect') }}
         </v-btn>
 
@@ -70,6 +75,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
+import { useTheme } from 'vuetify'
 import { useI18n } from 'vue-i18n'
 import { setAppLocale } from '@/i18n'
 import { useMidiStore } from '@/stores/midiStore'
@@ -79,6 +85,7 @@ import LibraryPanel from '@/components/LibraryPanel.vue'
 import type { DeviceModel } from '@/types/sequence'
 
 const { t, locale: i18nLocale } = useI18n()
+const theme = useTheme()
 const midi = useMidiStore()
 const sequence = useSequencerStore()
 
@@ -98,6 +105,15 @@ const locale = computed({
 })
 
 watch(locale, value => setAppLocale(value))
+
+watch(() => sequence.device, device => {
+  theme.change(device)
+  document.documentElement.dataset.device = device
+  const themeColor = document.querySelector('meta[name="theme-color"]')
+  if (themeColor) {
+    themeColor.setAttribute('content', device === 'keys' ? '#1c1712' : '#12161a')
+  }
+}, { immediate: true })
 
 onMounted(() => {
   midi.initialize()

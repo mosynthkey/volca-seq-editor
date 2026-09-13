@@ -29,6 +29,13 @@ KORG **volca keys** / **volca bass** 向けシーケンスエディタ（Vue 3 C
 - モーションを CC として REAL TIME REC に同時送信（Smooth 時はステップ内 5 点）
 - SMF / JSON 入出力、ローカルライブラリ、ユークリッド、モーションパターン
 
+## テーマ
+
+機種ドロップダウンで UI カラーが切り替わります。
+
+- **volca keys**: ゴールドフェイスプレート基調
+- **volca bass**: シルバーフェイスプレート + 赤 LED 基調
+
 ## 開発
 
 ```bash
@@ -40,6 +47,14 @@ npm run build
 
 Web MIDI 対応ブラウザ（Chrome / Edge 推奨）で MIDI インターフェースを接続してください。
 
+## GitHub Pages
+
+`main` への push で `.github/workflows/deploy-web.yml` がビルドし、GitHub Pages にデプロイします。
+
+リポジトリ Settings → Pages → Source を **GitHub Actions** にしてください。公開 URL は次の想定です。
+
+`https://mosynthkey.github.io/volca-seq-editor/`
+
 ## ライセンス
 
-MIT（予定）。MIDI 仕様は KORG 公式実装チャートに基づく。
+MIT。MIDI 仕様は KORG 公式実装チャートに基づく。
