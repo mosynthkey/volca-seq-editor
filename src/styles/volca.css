@@ -1,0 +1,386 @@
+:root,
+[data-device='keys'] {
+  color-scheme: dark;
+  /* Faceplate sample from hardware: #bba99a */
+  --volca-bg: #1a1613;
+  --volca-panel: rgba(42, 36, 32, 0.92);
+  --volca-panel-solid: #2a2420;
+  --volca-raised: #3a322c;
+  --volca-sunken: #100e0c;
+  --volca-line: rgba(187, 169, 154, 0.22);
+  --volca-line-strong: rgba(187, 169, 154, 0.44);
+  --volca-accent: #bba99a;
+  --volca-accent-bright: #d4c4b6;
+  --volca-accent-soft: rgba(187, 169, 154, 0.16);
+  --volca-text: #f2ebe4;
+  --volca-muted: #a8988a;
+  --volca-note: #cbb5a4;
+  --volca-note-soft: rgba(203, 181, 164, 0.48);
+  --volca-flag: #bba99a;
+  --volca-led: #d4c4b6;
+  --volca-glow-a: rgba(187, 169, 154, 0.2);
+  --volca-glow-b: rgba(212, 196, 182, 0.14);
+  --volca-header-bg: rgba(16, 14, 12, 0.8);
+  --volca-type-label: 13px;
+  --volca-type-body: 14px;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: var(--volca-type-body);
+}
+
+[data-device='bass'] {
+  /* Faceplate sample from hardware: #c8c8c9 */
+  --volca-bg: #141516;
+  --volca-panel: rgba(34, 36, 38, 0.92);
+  --volca-panel-solid: #222426;
+  --volca-raised: #323436;
+  --volca-sunken: #0c0d0e;
+  --volca-line: rgba(200, 200, 201, 0.2);
+  --volca-line-strong: rgba(200, 200, 201, 0.42);
+  --volca-accent: #c8c8c9;
+  --volca-accent-bright: #e4e4e5;
+  --volca-accent-soft: rgba(200, 200, 201, 0.14);
+  --volca-text: #f0f0f1;
+  --volca-muted: #949496;
+  --volca-note: #d4d4d5;
+  --volca-note-soft: rgba(212, 212, 213, 0.45);
+  --volca-flag: #c8c8c9;
+  --volca-led: #e4e4e5;
+  --volca-glow-a: rgba(200, 200, 201, 0.18);
+  --volca-glow-b: rgba(228, 228, 229, 0.12);
+  --volca-header-bg: rgba(12, 13, 14, 0.82);
+}
+
+html, body, #app {
+  margin: 0;
+  min-width: 720px;
+  min-height: 100%;
+  background:
+    radial-gradient(1100px 560px at 8% -12%, var(--volca-glow-a), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, var(--volca-glow-b), transparent 50%),
+    var(--volca-bg);
+  color: var(--volca-text);
+  transition: background 0.35s ease, color 0.25s ease;
+  user-select: none;
+}
+
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--volca-line);
+  background: var(--volca-header-bg);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.app-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+}
+
+.app-brand__title {
+  margin: 0;
+  color: var(--volca-accent-bright);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: color 0.3s ease;
+}
+
+.app-brand__sub {
+  margin: 0;
+  color: var(--volca-muted);
+  font-size: 12px;
+}
+
+.device-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--volca-line-strong);
+  border-radius: 999px;
+  background: var(--volca-accent-soft);
+  color: var(--volca-accent-bright);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.device-chip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--volca-led);
+  box-shadow: 0 0 8px var(--volca-led);
+}
+
+.app-main {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 12px;
+  padding: 12px;
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  border: 1px solid var(--volca-line);
+  border-radius: 12px;
+  background: var(--volca-panel);
+  overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--volca-line);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.toolbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar-group + .toolbar-group {
+  margin-left: 4px;
+  padding-left: 10px;
+  border-left: 1px solid var(--volca-line-strong);
+}
+
+.hint-banner {
+  margin: 0;
+  padding: 8px 12px;
+  color: var(--volca-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  border-bottom: 1px solid var(--volca-line);
+  background: var(--volca-accent-soft);
+  transition: background 0.3s ease;
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.side-card {
+  padding: 12px;
+}
+
+.side-card h3 {
+  margin: 0 0 8px;
+  color: var(--volca-accent);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  transition: color 0.3s ease;
+}
+
+.note-list {
+  margin: 0;
+  padding-left: 16px;
+  color: var(--volca-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.roll {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+
+.roll-header,
+.roll-row {
+  display: grid;
+  grid-template-columns: 160px repeat(16, minmax(28px, 1fr));
+}
+
+.pitch-gutter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  color: var(--volca-muted);
+  font-size: 11px;
+  border-right: 1px solid var(--volca-line);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.pitch-gutter.black-key {
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--volca-accent-bright);
+}
+
+.step-cell {
+  position: relative;
+  min-height: 22px;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.step-cell.beat {
+  background: var(--volca-accent-soft);
+}
+
+.header-cell {
+  display: grid;
+  place-items: center;
+  color: var(--volca-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.header-cell.muted {
+  opacity: 0.35;
+}
+
+.flag-cell {
+  display: grid;
+  place-items: center;
+  min-height: 26px;
+}
+
+.flag {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--volca-line-strong);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.flag.on {
+  background: var(--volca-flag);
+  border-color: var(--volca-flag);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--volca-flag) 55%, transparent);
+}
+
+.flag.sound.on {
+  background: var(--volca-accent);
+  border-color: var(--volca-accent);
+}
+
+.roll-body {
+  max-height: 420px;
+  overflow: auto;
+  background: var(--volca-sunken);
+}
+
+.note-cell {
+  cursor: cell;
+}
+
+.note-cell.has-note {
+  background: linear-gradient(180deg, var(--volca-note), var(--volca-note-soft));
+}
+
+.note-cell.selected {
+  outline: 2px solid var(--volca-accent-bright);
+  outline-offset: -2px;
+}
+
+.note-cell.start {
+  border-left: 2px solid #fff;
+}
+
+.note-cell__label {
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  font-size: 9px;
+  color: #1a1208;
+  font-weight: 700;
+}
+
+[data-device='bass'] .note-cell__label {
+  color: #101418;
+}
+
+.note-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.flux-lane {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--volca-line);
+}
+
+.flux-ticks {
+  display: grid;
+  grid-template-columns: repeat(96, minmax(2px, 1fr));
+  gap: 1px;
+  min-height: 28px;
+  align-items: end;
+}
+
+.flux-tick {
+  height: 10px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.flux-tick.on {
+  height: 22px;
+  background: var(--volca-led);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--volca-led) 60%, transparent);
+}
+
+.flux-tick.step-start {
+  background: var(--volca-accent-soft);
+}
+
+.log-panel {
+  max-height: 160px;
+  overflow: auto;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--volca-muted);
+  white-space: pre-wrap;
+}
+
+/* Smooth Vuetify surface tint when theme swaps */
+.v-application {
+  background: transparent !important;
+  transition: background-color 0.3s ease;
+}
