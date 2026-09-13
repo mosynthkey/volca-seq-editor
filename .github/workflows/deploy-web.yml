@@ -32,12 +32,6 @@ jobs:
 
       - run: npm run build
 
-      # Enable Pages (source: GitHub Actions) on first deploy so deploy-pages does not 404.
-      - if: github.event_name != 'pull_request'
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
@@ -51,5 +45,26 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      # GITHUB_TOKEN cannot create a Pages site; enablement must be done once in Settings.
+      - name: Check GitHub Pages
+        id: pages
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api "repos/${{ github.repository }}/pages" --jq .status
+
+      - name: Deploy
+        if: steps.pages.outcome == 'success'
+        id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Pages setup required
+        if: steps.pages.outcome != 'success'
+        run: |
+          {
+            echo '## GitHub Pages is not enabled'
+            echo ''
+            echo 'Open [Settings → Pages](https://github.com/'"${{ github.repository }}"'/settings/pages),'
+            echo 'set **Build and deployment → Source** to **GitHub Actions**, then re-run this workflow.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo '::warning::GitHub Pages is not enabled. Set Source to GitHub Actions in repo Settings → Pages, then re-run.'

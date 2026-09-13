@@ -49,7 +49,9 @@ Web MIDI 対応ブラウザ（Chrome / Edge 推奨）で MIDI インターフェ
 
 ## GitHub Pages
 
-`main` への push で `.github/workflows/deploy-web.yml` がビルドし、GitHub Pages にデプロイします。初回デプロイ時に Pages（Source: GitHub Actions）を自動有効化します。公開 URL は次の想定です。
+`main` への push で `.github/workflows/deploy-web.yml` がビルドし、GitHub Pages にデプロイします。
+
+初回のみリポジトリ **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にしてください（`GITHUB_TOKEN` では Pages の新規有効化ができないため）。公開 URL は次の想定です。
 
 `https://mosynthkey.github.io/volca-seq-editor/`
 
