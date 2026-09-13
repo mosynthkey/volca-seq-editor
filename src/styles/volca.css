@@ -28,25 +28,26 @@
 }
 
 [data-device='bass'] {
-  --volca-bg: #12161a;
-  --volca-panel: rgba(30, 38, 46, 0.92);
-  --volca-panel-solid: #1e262e;
-  --volca-raised: #2a343e;
-  --volca-sunken: #0a0d10;
-  --volca-line: rgba(197, 206, 214, 0.18);
-  --volca-line-strong: rgba(197, 206, 214, 0.38);
-  --volca-accent: #c5ced6;
-  --volca-accent-bright: #e8eef3;
-  --volca-accent-soft: rgba(197, 206, 214, 0.14);
-  --volca-text: #eef2f5;
-  --volca-muted: #8f9ba6;
-  --volca-note: #d7dee4;
-  --volca-note-soft: rgba(215, 222, 228, 0.42);
-  --volca-flag: #e53935;
-  --volca-led: #e53935;
-  --volca-glow-a: rgba(229, 57, 53, 0.16);
-  --volca-glow-b: rgba(197, 206, 214, 0.14);
-  --volca-header-bg: rgba(10, 13, 16, 0.8);
+  /* Faceplate sample from hardware: #c8c8c9 */
+  --volca-bg: #141516;
+  --volca-panel: rgba(34, 36, 38, 0.92);
+  --volca-panel-solid: #222426;
+  --volca-raised: #323436;
+  --volca-sunken: #0c0d0e;
+  --volca-line: rgba(200, 200, 201, 0.2);
+  --volca-line-strong: rgba(200, 200, 201, 0.42);
+  --volca-accent: #c8c8c9;
+  --volca-accent-bright: #e4e4e5;
+  --volca-accent-soft: rgba(200, 200, 201, 0.14);
+  --volca-text: #f0f0f1;
+  --volca-muted: #949496;
+  --volca-note: #d4d4d5;
+  --volca-note-soft: rgba(212, 212, 213, 0.45);
+  --volca-flag: #c8c8c9;
+  --volca-led: #e4e4e5;
+  --volca-glow-a: rgba(200, 200, 201, 0.18);
+  --volca-glow-b: rgba(228, 228, 229, 0.12);
+  --volca-header-bg: rgba(12, 13, 14, 0.82);
 }
 
 html, body, #app {

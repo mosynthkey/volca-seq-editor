@@ -111,7 +111,7 @@ watch(() => sequence.device, device => {
   document.documentElement.dataset.device = device
   const themeColor = document.querySelector('meta[name="theme-color"]')
   if (themeColor) {
-    themeColor.setAttribute('content', device === 'keys' ? '#1a1613' : '#12161a')
+    themeColor.setAttribute('content', device === 'keys' ? '#1a1613' : '#141516')
   }
 }, { immediate: true })
 

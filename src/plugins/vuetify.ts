@@ -14,15 +14,15 @@ export const keysThemeColors = {
   error: '#c86b5a',
 }
 
-/** Silver faceplate + red LED — volca bass */
+/** Silver faceplate — volca bass (#c8c8c9 from hardware panel) */
 export const bassThemeColors = {
-  background: '#12161a',
-  surface: '#1e262e',
-  primary: '#c5ced6',
-  secondary: '#e53935',
-  success: '#9aa7b2',
-  info: '#c5ced6',
-  warning: '#e53935',
+  background: '#141516',
+  surface: '#222426',
+  primary: '#c8c8c9',
+  secondary: '#e4e4e5',
+  success: '#a8a8aa',
+  info: '#e4e4e5',
+  warning: '#c8c8c9',
   error: '#e53935',
 }
 
